@@ -1,0 +1,11 @@
+{
+  "name": "exifstore",
+  "version": "1.0.0",
+  "description": "Gallery app that displays, stores and searches images using metadata",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "ipejin",
+  "license": "ISC"
+}
