@@ -1,0 +1,1 @@
+Frontend for exifstore app
