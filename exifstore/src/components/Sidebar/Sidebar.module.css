@@ -1,17 +1,25 @@
 .sidebar {
-  background-color: grey;
+  background-color: antiquewhite;
   display: inline-flex;
   flex-direction: column;
-  border: 1rem solid #fff;
-  border-radius: 2rem;
-  height: calc(100vh - 2rem);
+  justify-content: space-between;
+  border: 1px solid #444;
+  height: 100vh;
 
-  font-size: large;
+  font-size: 1rem;
 }
 
 .buttonBox {
   display: inherit;
   flex-direction: inherit;
-  padding: 2rem 1rem;
+  padding: 1.5rem;
   gap: 2rem;
+}
+
+.authorBox {
+  text-align: center;
+  background-color: #555;
+  color: whitesmoke;
+  padding: 1rem;
+  margin-top: 2.5rem;
 }

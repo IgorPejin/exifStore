@@ -5,8 +5,8 @@ function UserData() {
     <div className={styles.userBox}>
       <img className={styles.userImage} src="" alt=""></img>
       <div className={styles.userData}>
-        <span>@UsernameTest</span>
-        <span>email@email.test</span>
+        <p style={{ fontWeight: "bold" }}>@UsernameTest</p>
+        <p className={styles.userDataEmail}>email@email.test</p>
       </div>
     </div>
   );
