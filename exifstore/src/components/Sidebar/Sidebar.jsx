@@ -17,7 +17,11 @@ function Sidebar() {
       <nav className={styles.sidebar}>
         <UserProfile />
         <div className={styles.buttonBox}>
-          <Button variant="contained" size="large">
+          <Button
+            variant="contained"
+            size="large"
+            sx={{ backgroundColor: "#55B" }}
+          >
             Liked images
           </Button>
           <Button variant="contained" size="large" color="success">
@@ -48,7 +52,7 @@ function Sidebar() {
             </ListItem>
           </List>
           <div className={styles.authorBox}>
-            <p>made by ipejin</p>
+            <p>exifstore app by ipejin</p>
           </div>
         </div>
       </nav>

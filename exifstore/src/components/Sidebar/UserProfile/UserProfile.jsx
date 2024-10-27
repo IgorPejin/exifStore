@@ -6,8 +6,17 @@ function UserProfile() {
     <div className={styles.userProfileBox}>
       <UserData />
       <div className={styles.userProfileData}>
-        <p style={{ marginBottom: "1rem" }}>Total galleries: 99</p>
-        <p>Total images: 99</p>
+        <div
+          style={{ marginBottom: "1rem" }}
+          className={styles.userProfileDataRow}
+        >
+          <p>Total galleries: </p>
+          <p>99</p>
+        </div>
+        <div className={styles.userProfileDataRow}>
+          <p>Total images:</p>
+          <p>99</p>
+        </div>
       </div>
     </div>
   );
