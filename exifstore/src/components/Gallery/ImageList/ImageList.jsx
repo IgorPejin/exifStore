@@ -1,6 +1,6 @@
 import { useState } from "react";
 import styles from "./ImageList.module.css";
-import MasonryImageList from "./QuiltedImageList/MassonryImageList";
+import MasonryImageList from "./MasonryImageList/MasonryImageList";
 import Pagination from "@mui/material/Pagination";
 import IconButton from "@mui/material/IconButton";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
