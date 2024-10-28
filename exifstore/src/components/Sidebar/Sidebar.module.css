@@ -7,19 +7,5 @@
   height: calc(100vh - 0.1rem);
 
   font-size: 1rem;
-}
-
-.buttonBox {
-  display: inherit;
-  flex-direction: inherit;
-  padding: 1.5rem;
-  gap: 2rem;
-}
-
-.authorBox {
-  text-align: center;
-  background-color: #55b;
-  color: whitesmoke;
-  padding: 1.5rem;
-  margin-top: 2.5rem;
+  position: relative;
 }

@@ -1,0 +1,6 @@
+.buttonBox {
+  display: inherit;
+  flex-direction: inherit;
+  padding: 0 2rem;
+  gap: 2rem;
+}
