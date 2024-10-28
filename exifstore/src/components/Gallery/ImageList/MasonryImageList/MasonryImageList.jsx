@@ -4,8 +4,15 @@ import ImageListItem from "@mui/material/ImageListItem";
 
 export default function MasonryImageList() {
   return (
-    <Box sx={{ width: "95%", height: 750, overflowY: "scroll" }}>
-      <ImageList variant="masonry" cols={4} gap={8}>
+    <Box
+      sx={{
+        width: "95%",
+        height: 750,
+        overflowY: "scroll",
+        marginTop: "0.5rem",
+      }}
+    >
+      <ImageList variant="masonry" cols={7} gap={8}>
         {itemData.map((item) => (
           <ImageListItem key={item.title}>
             <img

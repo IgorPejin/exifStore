@@ -27,7 +27,7 @@ function ImageList() {
           showLastButton
         ></Pagination>
         <IconButton
-          sx={{ position: "absolute", right: "2.5%" }}
+          sx={{ position: "absolute", right: "2.5%", bottom: "5%" }}
           aria-label="delete"
           size="large"
         >
