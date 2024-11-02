@@ -1,9 +1,10 @@
 import { Navigate, Outlet } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext";
+import { useContext } from "react";
 
 const ProtectedRoute = () => {
-  // todo: token encryption and cookie storage
-  const user = true;
-  return user ? <Outlet /> : <Navigate to="/login" />;
+  const { isAuthenticated } = useContext(AuthContext);
+  return isAuthenticated ? <Outlet /> : <Navigate to="/login" />;
 };
 
 export default ProtectedRoute;

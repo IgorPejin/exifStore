@@ -1,0 +1,56 @@
+.loginBox {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: aliceblue;
+  height: 100vh;
+}
+.loginBoxWrapper {
+  display: flex;
+  background-color: whitesmoke;
+  color: #222;
+  border: 1px solid #55b;
+  border-left: 0;
+  gap: 2rem;
+}
+.loginTextBox {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  flex-direction: column;
+  padding: 0 5rem;
+  flex-grow: 1;
+}
+.loginTextBox h1,
+h3 {
+}
+
+.formBox {
+  flex-shrink: 1;
+}
+
+.form {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 3rem;
+  background-color: #55b;
+  border: 5px solid #fff;
+  outline: 1px solid #55b;
+}
+
+.registerText {
+  background-color: inherit;
+  color: inherit;
+
+  transition: all 0.2s ease-in;
+  text-align: center;
+}
+
+.registerText:hover {
+  background-color: #55b;
+  color: whitesmoke;
+}
