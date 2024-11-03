@@ -2,6 +2,7 @@ import { Button, IconButton, TextField } from "@mui/material";
 import styles from "./Login.module.css";
 import { useState } from "react";
 import UndoIcon from "@mui/icons-material/Undo";
+import axios from "axios";
 
 function Login() {
   const [register, setRegister] = useState(false);
@@ -16,16 +17,62 @@ function Login() {
     setPassword("");
   }
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
-    console.log(username, password, email);
+    const credentials = {
+      email: email,
+      username: username,
+      password: password,
+    };
+    if (register) {
+      const response = await axios
+        .post(
+          "http://localhost:9000/register",
+          { credentials },
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        )
+        .catch(function (error) {
+          const message = error.response.response.msg;
+          const statusCode = error.response.status;
+          return { message: message, statusCode: statusCode };
+        });
+      if (response.message) console.log(response.message);
+      else console.log(response.data.token);
+    } else {
+      const response = await axios
+        .post(
+          "http://localhost:9000/login",
+          { credentials },
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        )
+        .catch(function (error) {
+          const message = error.response.data.msg;
+          const statusCode = error.response.status;
+          return { message: message, statusCode: statusCode };
+        });
+      if (response.message) console.log(response.message);
+      else console.log(response.data.token);
+    }
   }
 
   return (
     <div className={styles.loginBox}>
       <div className={styles.loginBoxWrapper}>
         <div className={styles.formBox}>
-          <form onSubmit={handleSubmit} className={styles.form}>
+          <form
+            action={register ? "register" : "login"}
+            method="post"
+            onSubmit={handleSubmit}
+            className={styles.form}
+          >
             {register && (
               <IconButton
                 onClick={handleRegister}
@@ -86,7 +133,7 @@ function Login() {
                     },
                   },
                   htmlInput: {
-                    maxLength: 16,
+                    maxLength: 100,
                   },
                 }}
                 sx={{
