@@ -7,8 +7,8 @@ import { AuthProvider } from "./context/AuthContext";
 
 function App() {
   return (
-    <AuthProvider>
-      <BrowserRouter>
+    <BrowserRouter>
+      <AuthProvider>
         <Routes>
           <Route index element={<Hero />} />
           <Route element={<ProtectedRoute />}>
@@ -16,8 +16,8 @@ function App() {
           </Route>
           <Route path="/login" element={<Login />} />
         </Routes>
-      </BrowserRouter>
-    </AuthProvider>
+      </AuthProvider>
+    </BrowserRouter>
   );
 }
 

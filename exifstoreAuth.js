@@ -17,9 +17,9 @@ app.use(cors(corsOptions));
 
 app.post("/register", (req, res) => {
   const joi = {
-    username: req.body.credentials.username,
-    email: req.body.credentials.email,
-    password: bcrypt.hashSync(req.body.credentials.password, 10),
+    username: req.body.username,
+    email: req.body.email,
+    password: bcrypt.hashSync(req.body.password, 10),
   };
 
   const schema = Joi.object({
@@ -33,7 +33,7 @@ app.post("/register", (req, res) => {
 
   const { error, value } = schema.validate({
     username: joi.username,
-    password: req.body.credentials.password,
+    password: req.body.password,
     email: joi.email,
   });
 
@@ -60,9 +60,9 @@ app.post("/register", (req, res) => {
 });
 
 app.post("/login", (req, res) => {
-  User.findOne({ where: { username: req.body.credentials.username } })
+  User.findOne({ where: { username: req.body.username } })
     .then((usr) => {
-      if (bcrypt.compareSync(req.body.credentials.password, usr.password)) {
+      if (bcrypt.compareSync(req.body.password, usr.password)) {
         const obj = {
           id: usr.id,
           username: usr.username,

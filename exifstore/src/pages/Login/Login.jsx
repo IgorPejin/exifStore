@@ -1,14 +1,17 @@
 import { Button, IconButton, TextField } from "@mui/material";
 import styles from "./Login.module.css";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import UndoIcon from "@mui/icons-material/Undo";
-import axios from "axios";
+import { AuthContext } from "../../context/AuthContext";
+import axiosCall from "./axiosCall";
 
 function Login() {
   const [register, setRegister] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
+
+  const { login } = useContext(AuthContext);
 
   function handleRegister() {
     setRegister(!register);
@@ -25,41 +28,29 @@ function Login() {
       password: password,
     };
     if (register) {
-      const response = await axios
-        .post(
-          "http://localhost:9000/register",
-          { credentials },
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        )
-        .catch(function (error) {
-          const message = error.response.response.msg;
-          const statusCode = error.response.status;
-          return { message: message, statusCode: statusCode };
-        });
-      if (response.message) console.log(response.message);
-      else console.log(response.data.token);
+      const response = await axiosCall(
+        "post",
+        "http://localhost:9000/register",
+        credentials,
+        { "Content-Type": "application/json" }
+      );
+
+      if (response.error)
+        alert("Server responded with a message:\n " + response.message);
+      else login(response.data.token, email, username);
     } else {
-      const response = await axios
-        .post(
-          "http://localhost:9000/login",
-          { credentials },
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        )
-        .catch(function (error) {
-          const message = error.response.data.msg;
-          const statusCode = error.response.status;
-          return { message: message, statusCode: statusCode };
-        });
-      if (response.message) console.log(response.message);
-      else console.log(response.data.token);
+      const response = await axiosCall(
+        "post",
+        "http://localhost:9000/login",
+        credentials,
+        {
+          "Content-Type": "application/json",
+        }
+      );
+
+      if (response.error)
+        alert("Server responded with a message:\n " + response.message);
+      else login(response.data.token, email, username);
     }
   }
 
