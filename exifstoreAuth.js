@@ -6,16 +6,16 @@ const Joi = require("joi");
 const cors = require("cors");
 require("dotenv").config();
 
-const app = express();
+const appAuth = express();
 var corsOptions = {
   origin: [`http://localhost:5200`],
   optionsSuccessStatus: 200,
 };
 
-app.use(express.json());
-app.use(cors(corsOptions));
+appAuth.use(express.json());
+appAuth.use(cors(corsOptions));
 
-app.post("/register", (req, res) => {
+appAuth.post("/register", (req, res) => {
   const joi = {
     username: req.body.username,
     email: req.body.email,
@@ -59,7 +59,7 @@ app.post("/register", (req, res) => {
   }
 });
 
-app.post("/login", (req, res) => {
+appAuth.post("/login", (req, res) => {
   User.findOne({ where: { username: req.body.username } })
     .then((usr) => {
       if (bcrypt.compareSync(req.body.password, usr.password)) {
@@ -82,6 +82,6 @@ app.post("/login", (req, res) => {
     });
 });
 
-app.listen({ port: process.env.AUTH_SERVER_PORT }, () => {
+appAuth.listen({ port: process.env.AUTH_SERVER_PORT }, () => {
   console.log("exifstoreAuth running...");
 });

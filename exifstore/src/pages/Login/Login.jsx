@@ -35,9 +35,9 @@ function Login() {
         { "Content-Type": "application/json" }
       );
 
-      if (response.error)
-        alert("Server responded with a message:\n " + response.message);
-      else login(response.data.token, email, username);
+      if (response.error) {
+        alert("There seems to be an error which says:\n " + response.error);
+      } else login(response.data.token, email, username);
     } else {
       const response = await axiosCall(
         "post",
@@ -49,7 +49,7 @@ function Login() {
       );
 
       if (response.error)
-        alert("Server responded with a message:\n " + response.message);
+        alert("There seems to be an error which says:\n " + response.error);
       else login(response.data.token, email, username);
     }
   }

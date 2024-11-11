@@ -34,12 +34,6 @@ export default function AutocompleteAsync() {
 
   return (
     <Autocomplete
-      sx={{
-        width: "calc(100% - 4rem)",
-        padding: "0 2rem",
-        position: "absolute",
-        top: "15.5rem",
-      }}
       open={open}
       onOpen={handleOpen}
       onClose={handleClose}

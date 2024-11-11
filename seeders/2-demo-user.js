@@ -7,16 +7,15 @@ module.exports = {
       "Users",
       [
         {
-          username: "ipejin",
+          username: "Stefan",
           password:
-            "$2b$10$fNWvdFFK4IhYNH/e5v26o.w7MJBTNQQLwXR8JCG9caBr6oxMSMB8m", // adminadmin123
-          email: "exampleEmail@email.com",
+            "$2b$10$To/ZsgrNd0W23yazvh9B1uFk/Pv2ooVNDSQyyIUEKrHc8qHEU3hpG", //stefanstefan123
+          email: "notreallystefan@somemail.com",
         },
       ],
       {}
     );
   },
-
   async down(queryInterface, Sequelize) {
     await queryInterface.bulkDelete("Users", null, {});
   },

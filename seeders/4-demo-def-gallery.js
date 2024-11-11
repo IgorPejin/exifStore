@@ -4,20 +4,19 @@
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.bulkInsert(
-      "Users",
+      "Galleries",
       [
         {
-          username: "ipejin",
-          password:
-            "$2b$10$fNWvdFFK4IhYNH/e5v26o.w7MJBTNQQLwXR8JCG9caBr6oxMSMB8m", // adminadmin123
-          email: "exampleEmail@email.com",
+          name: "Stefan's images",
+          description: "All your images in one place!",
+          thumbnail_ref: undefined,
+          user_id: 2,
         },
       ],
       {}
     );
   },
-
   async down(queryInterface, Sequelize) {
-    await queryInterface.bulkDelete("Users", null, {});
+    await queryInterface.bulkDelete("Galleries", null, {});
   },
 };

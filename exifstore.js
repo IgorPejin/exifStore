@@ -3,9 +3,8 @@ const exifr = require("exifr");
 
 const exifStoreApp = express();
 
-exifStoreApp.listen({ port: 8000 }, () => {
+exifStoreApp.listen({ port: process.env.EXIF_APP_PORT }, () => {
+  console.log("exifStore running...");
   // (async () =>
-  //   console.log(
-  //     await exifr.parse("test image", true)
-  //   ))();
+  //   console.log(await exifr.parse("test", true)))();
 });
