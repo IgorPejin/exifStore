@@ -7,6 +7,7 @@ function axiosCall(method, url, payload, headers) {
     data: payload,
     headers: { ...headers },
   }).catch(function (error) {
+    console.log(error);
     const message = error.response.data.msg;
     const statusCode = error.response.status;
     return { error: message, statusCode: statusCode };

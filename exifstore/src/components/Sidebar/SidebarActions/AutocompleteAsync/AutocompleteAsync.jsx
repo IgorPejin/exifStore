@@ -1,7 +1,9 @@
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
 import CircularProgress from "@mui/material/CircularProgress";
-import { useState } from "react";
+import { useEffect, useState, useContext } from "react";
+import axiosCall from "../../../../utils/axiosCall";
+import { AuthContext } from "../../../../context/AuthContext";
 
 function sleep(duration) {
   return new Promise((resolve) => {
@@ -16,20 +18,36 @@ export default function AutocompleteAsync() {
   const [options, setOptions] = useState([]);
   const [loading, setLoading] = useState(false);
 
+  const { token } = useContext(AuthContext);
+
+  useEffect(() => {
+    async function getGalleriesForUser() {
+      setLoading(true);
+      await sleep(1e3);
+      const response = await axiosCall(
+        "get",
+        "http://localhost:7000/exifstore/galleriesForUser",
+        undefined,
+        {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        }
+      );
+      const galleryNames = response.data.map((gallery) => ({
+        name: gallery.name,
+      }));
+      setOptions(galleryNames);
+      setLoading(false);
+    }
+    getGalleriesForUser();
+  }, [token, options.length]);
+
   const handleOpen = () => {
     setOpen(true);
-    (async () => {
-      setLoading(true);
-      await sleep(1e3); // For demo purposes.
-      setLoading(false);
-
-      setOptions([...data]);
-    })();
   };
 
   const handleClose = () => {
     setOpen(false);
-    setOptions([]);
   };
 
   return (
@@ -37,8 +55,8 @@ export default function AutocompleteAsync() {
       open={open}
       onOpen={handleOpen}
       onClose={handleClose}
-      isOptionEqualToValue={(option, value) => option.title === value.title}
-      getOptionLabel={(option) => option.title}
+      isOptionEqualToValue={(option, value) => option.name === value.name}
+      getOptionLabel={(option) => option.name}
       options={options}
       loading={loading}
       renderInput={(params) => (
@@ -63,5 +81,3 @@ export default function AutocompleteAsync() {
     />
   );
 }
-
-const data = [];

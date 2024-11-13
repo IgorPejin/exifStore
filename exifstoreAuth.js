@@ -1,8 +1,10 @@
 const express = require("express");
-const { User } = require("./models");
+const { sequelize, User } = require("./models");
+
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const Joi = require("joi");
+
 const cors = require("cors");
 require("dotenv").config();
 
@@ -72,7 +74,7 @@ appAuth.post("/login", (req, res) => {
 
         const token = jwt.sign(obj, process.env.ACCESS_TOKEN_SECRET);
 
-        res.json({ token: token, user_type: obj.user_type });
+        res.json({ token: token, email: obj.email });
       } else {
         res.status(400).json({ msg: "Invalid credentials" });
       }
@@ -82,6 +84,7 @@ appAuth.post("/login", (req, res) => {
     });
 });
 
-appAuth.listen({ port: process.env.AUTH_SERVER_PORT }, () => {
+appAuth.listen({ port: process.env.AUTH_SERVER_PORT }, async () => {
+  await sequelize.authenticate();
   console.log("exifstoreAuth running...");
 });

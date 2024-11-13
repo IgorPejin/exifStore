@@ -3,7 +3,7 @@ import styles from "./Login.module.css";
 import { useContext, useState } from "react";
 import UndoIcon from "@mui/icons-material/Undo";
 import { AuthContext } from "../../context/AuthContext";
-import axiosCall from "./axiosCall";
+import axiosCall from "../../utils/axiosCall";
 
 function Login() {
   const [register, setRegister] = useState(false);
@@ -22,6 +22,7 @@ function Login() {
 
   async function handleSubmit(e) {
     e.preventDefault();
+    console.log(email);
     const credentials = {
       email: email,
       username: username,
@@ -30,18 +31,19 @@ function Login() {
     if (register) {
       const response = await axiosCall(
         "post",
-        "http://localhost:9000/register",
+        "http://localhost:7200/register",
         credentials,
         { "Content-Type": "application/json" }
       );
 
       if (response.error) {
         alert("There seems to be an error which says:\n " + response.error);
-      } else login(response.data.token, email, username);
+      } else
+        login(response.data.token, response.data.email, credentials.username);
     } else {
       const response = await axiosCall(
         "post",
-        "http://localhost:9000/login",
+        "http://localhost:7200/login",
         credentials,
         {
           "Content-Type": "application/json",
@@ -50,7 +52,8 @@ function Login() {
 
       if (response.error)
         alert("There seems to be an error which says:\n " + response.error);
-      else login(response.data.token, email, username);
+      else
+        login(response.data.token, response.data.email, credentials.username);
     }
   }
 
