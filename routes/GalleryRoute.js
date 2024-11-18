@@ -25,7 +25,6 @@ function auth(req, res, next) {
 }
 
 route.get("/galleriesForUser", auth, (req, res) => {
-  console.log(req.user);
   const userId = req.user.id;
   Gallery.findAll({
     attributes: [

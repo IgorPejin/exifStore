@@ -61,6 +61,8 @@ appAuth.post("/register", (req, res) => {
   }
 });
 
+// todo: make where statement compare case sensitive
+
 appAuth.post("/login", (req, res) => {
   User.findOne({ where: { username: req.body.username } })
     .then((usr) => {

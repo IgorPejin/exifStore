@@ -1,0 +1,9 @@
+.autocompleteBox {
+  display: flex;
+  flex-direction: column;
+}
+.autocompleteActions {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1rem;
+}

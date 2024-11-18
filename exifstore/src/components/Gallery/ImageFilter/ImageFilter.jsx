@@ -2,16 +2,21 @@ import styles from "./ImageFilter.module.css";
 import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import dayjs from "dayjs";
 import { Button } from "@mui/material";
 
+import { GalleryContext } from "../../../context/GalleryContext";
+
 function ImageFilter() {
   const [date, setDate] = useState(dayjs("2022-04-17"));
+  const { selectedGallery } = useContext(GalleryContext);
 
   return (
     <div className={styles.imageFilterBox}>
-      <h1 style={{ fontWeight: 400 }}>Test title</h1>
+      <h1 style={{ fontWeight: 400 }}>
+        {selectedGallery != "" ? selectedGallery : "Choose gallery"}
+      </h1>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <DesktopDatePicker
           value={date}
