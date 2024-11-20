@@ -1,6 +1,7 @@
 const express = require("express");
 
 const galleries = require("./routes/GalleryRoute");
+const images = require("./routes/ImagesRoute");
 const { sequelize } = require("./models");
 
 const cors = require("cors");
@@ -16,6 +17,7 @@ appRest.use(express.json());
 appRest.use(cors(corsOptions));
 
 appRest.use("/exifstore", galleries);
+appRest.use("/exifstore", images);
 
 appRest.listen({ port: process.env.REST_ENDPOINT_PORT }, async () => {
   await sequelize.authenticate();

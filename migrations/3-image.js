@@ -9,6 +9,9 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
+      image_name: {
+        type: Sequelize.STRING,
+      },
       image_width: {
         type: Sequelize.INTEGER,
       },
@@ -22,22 +25,22 @@ module.exports = {
         type: Sequelize.STRING,
       },
       iso: {
-        type: Sequelize.STRING,
+        type: Sequelize.INTEGER,
       },
       exposure_time: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.FLOAT,
       },
       ev: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.FLOAT,
       },
       flash: {
-        type: Sequelize.BOOLEAN,
+        type: Sequelize.STRING,
       },
       f_number: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.FLOAT,
       },
       date_time: {
-        type: Sequelize.DATE,
+        type: Sequelize.STRING,
       },
       date_time_offset: {
         type: Sequelize.STRING,

@@ -3,8 +3,7 @@ const jwt = require("jsonwebtoken");
 const Joi = require("joi");
 require("dotenv").config();
 
-const { Gallery } = require("../models");
-
+const { Image } = require("../models");
 const route = express.Router();
 route.use(express.json());
 route.use(express.urlencoded({ extended: true }));
@@ -24,19 +23,11 @@ function auth(req, res, next) {
   });
 }
 
-route.get("/galleriesForUser", auth, (req, res) => {
+//todo: add src field to image so that u can use fs to get image data
+route.get("/imagesForGallery?:id", auth, async (req, res) => {
+  const id = req.query.id;
   const userId = req.user.id;
-  Gallery.findAll({
-    attributes: [
-      "id",
-      "name",
-      "description",
-      "thumbnail_ref",
-      "createdAt",
-      "updatedAt",
-    ],
-    where: { id: userId },
-  })
+  Image.findAll({ where: { gallery_id: id } })
     .then((rows) => res.json(rows))
     .catch((err) => res.status(500).json(err));
 });

@@ -17,6 +17,7 @@ var corsOptions = {
 appAuth.use(express.json());
 appAuth.use(cors(corsOptions));
 
+//todo: create a default gallery called {user}'s images after registering a user
 appAuth.post("/register", (req, res) => {
   const joi = {
     username: req.body.username,

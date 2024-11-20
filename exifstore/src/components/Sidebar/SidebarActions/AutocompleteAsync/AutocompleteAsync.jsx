@@ -23,7 +23,7 @@ export default function AutocompleteAsync() {
   const [open, setOpen] = useState(false);
   const [options, setOptions] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [selectedGallery, setSelectedGallery] = useState("");
+  const [selectedOption, setSelectedOption] = useState(null);
 
   const { token } = useContext(AuthContext);
   const { setGalleryContext } = useContext(GalleryContext);
@@ -42,6 +42,7 @@ export default function AutocompleteAsync() {
         }
       );
       const galleryNames = response.data.map((gallery) => ({
+        id: gallery.id,
         name: gallery.name,
       }));
       setOptions(galleryNames);
@@ -58,16 +59,16 @@ export default function AutocompleteAsync() {
     setOpen(false);
   };
 
-  const handleChange = (e) => {
-    setSelectedGallery(e.target.textContent);
-    setGalleryContext(e.target.textContent);
+  const handleChange = (e, newValue) => {
+    setSelectedOption(newValue);
+    setGalleryContext(newValue);
   };
 
   return (
     <div className={styles.autocompleteBox}>
       <div
         style={
-          selectedGallery ? { visibility: "visible" } : { visibility: "hidden" }
+          selectedOption ? { visibility: "visible" } : { visibility: "hidden" }
         }
         className={styles.autocompleteActions}
       >
@@ -83,10 +84,12 @@ export default function AutocompleteAsync() {
         onOpen={handleOpen}
         onClose={handleClose}
         onChange={handleChange}
-        isOptionEqualToValue={(option, value) => option.name === value.name}
+        isOptionEqualToValue={(option, value) => option.id === value.id}
         getOptionLabel={(option) => option.name}
+        getOptionKey={(option) => option.id}
         options={options}
         loading={loading}
+        value={selectedOption}
         renderInput={(params) => (
           <TextField
             {...params}

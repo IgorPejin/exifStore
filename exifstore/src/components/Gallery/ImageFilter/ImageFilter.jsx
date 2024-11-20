@@ -15,7 +15,7 @@ function ImageFilter() {
   return (
     <div className={styles.imageFilterBox}>
       <h1 style={{ fontWeight: 400 }}>
-        {selectedGallery != "" ? selectedGallery : "Choose gallery"}
+        {selectedGallery ? selectedGallery.name : "Choose gallery"}
       </h1>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <DesktopDatePicker

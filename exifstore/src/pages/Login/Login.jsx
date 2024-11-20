@@ -22,7 +22,6 @@ function Login() {
 
   async function handleSubmit(e) {
     e.preventDefault();
-    console.log(email);
     const credentials = {
       email: email,
       username: username,
