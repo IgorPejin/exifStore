@@ -25,21 +25,20 @@ function auth(req, res, next) {
 }
 
 async function parseImagesData(rows) {
-  const imagesData = rows.map((record) => {
-    const file = fs.readFileSync(record.image_path);
+  const images = [];
+  for (let record of rows) {
+    const file = await fs.promises.readFile(record.image_path);
     const fileBuffer = Buffer.from(file);
-    return { ...record, image_buffer: fileBuffer };
-  });
-  return imagesData;
+    images.push({ ...record, image_buffer: fileBuffer });
+  }
+  return images;
 }
 
 route.get("/imagesForGallery?:id", auth, async (req, res) => {
   const id = req.query.id;
   Image.findAll({ raw: true, nest: true, where: { gallery_id: id } })
-    .then(async (rows) => {
-      const images = await parseImagesData(rows);
-      res.json(images);
-    })
+    .then((rows) => parseImagesData(rows))
+    .then((data) => res.json(data))
     .catch((err) => res.status(500).json(err));
 });
 
