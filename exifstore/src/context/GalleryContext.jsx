@@ -1,11 +1,14 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { AuthContext } from "./AuthContext";
 import axiosCall from "../utils/axiosCall";
+import bufferToBase64 from "../utils/bufferToBase64";
 
 const GalleryContext = createContext();
 
 function GalleryProvider({ children }) {
   const [selectedGallery, setSelectedGallery] = useState(null);
+  //todo: learn the basics of useMemo so that u can save a request if the selected gallery is the same.
+  const [imagesForGallery, setImagesForGallery] = useState([]);
   const { token } = useContext(AuthContext);
 
   useEffect(() => {
@@ -19,8 +22,11 @@ function GalleryProvider({ children }) {
           Authorization: `Bearer ${token}`,
         }
       );
-      const galleryNames = response.data;
-      console.log(galleryNames);
+      const images = response.data.map((image) => {
+        const base64 = bufferToBase64(image.image_buffer);
+        return { ...image, base64_image: base64 };
+      });
+      setImagesForGallery(images);
     }
     if (selectedGallery) getImagesForGallery();
   }, [selectedGallery, token]);
@@ -32,6 +38,7 @@ function GalleryProvider({ children }) {
   const value = {
     setGalleryContext,
     selectedGallery,
+    imagesForGallery,
   };
   return (
     <GalleryContext.Provider value={value}>{children}</GalleryContext.Provider>

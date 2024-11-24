@@ -18,6 +18,9 @@ module.exports = {
       image_height: {
         type: Sequelize.INTEGER,
       },
+      image_path: {
+        type: Sequelize.STRING,
+      },
       make: {
         type: Sequelize.STRING,
       },

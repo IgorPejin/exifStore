@@ -10,6 +10,7 @@ module.exports = {
           image_name: "IMG_7124",
           image_width: 3562,
           image_height: 5343,
+          image_path: "storage/g2/IMG_8808.JPG",
           make: "Canon",
           model: "Canon EOS 250D",
           iso: 200,

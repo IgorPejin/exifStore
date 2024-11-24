@@ -1,6 +1,7 @@
 const express = require("express");
 const jwt = require("jsonwebtoken");
 const Joi = require("joi");
+const fs = require("fs");
 require("dotenv").config();
 
 const { Image } = require("../models");
@@ -23,12 +24,22 @@ function auth(req, res, next) {
   });
 }
 
-//todo: add src field to image so that u can use fs to get image data
+async function parseImagesData(rows) {
+  const imagesData = rows.map((record) => {
+    const file = fs.readFileSync(record.image_path);
+    const fileBuffer = Buffer.from(file);
+    return { ...record, image_buffer: fileBuffer };
+  });
+  return imagesData;
+}
+
 route.get("/imagesForGallery?:id", auth, async (req, res) => {
   const id = req.query.id;
-  const userId = req.user.id;
-  Image.findAll({ where: { gallery_id: id } })
-    .then((rows) => res.json(rows))
+  Image.findAll({ raw: true, nest: true, where: { gallery_id: id } })
+    .then(async (rows) => {
+      const images = await parseImagesData(rows);
+      res.json(images);
+    })
     .catch((err) => res.status(500).json(err));
 });
 
