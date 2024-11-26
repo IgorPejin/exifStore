@@ -4,21 +4,13 @@ import { GalleryContext } from "../../../../context/GalleryContext";
 import { useContext } from "react";
 import { ImageListItem, ImageListItemBar } from "@mui/material";
 import styles from "./MasonryImageList.module.css";
+import { AuthContext } from "../../../../context/AuthContext";
 
 export default function MasonryImageList() {
   const { imagesForGallery } = useContext(GalleryContext);
+  const { username } = useContext(AuthContext);
+  //todo: add loading state
   const images = [...imagesForGallery];
-
-  // const Image = ({ data }) => (
-  //   <div style={{ objectFit: "cover" }}>
-  //     <img
-  //     loading=""
-  //       width={"100%"}
-  //       height={"100%"}
-  //       src={`data:image/jpeg;base64,${data}`}
-  //     />
-  //   </div>
-  // );
 
   return (
     <Box
@@ -29,7 +21,7 @@ export default function MasonryImageList() {
         marginTop: "0.5rem",
       }}
     >
-      <ImageList sx={{ padding: "0 1rem" }} variant="masonry" cols={3} gap={20}>
+      <ImageList variant="masonry" cols={3} gap={20}>
         {images.map((image) => (
           <ImageListItem key={image.id}>
             <img
@@ -37,7 +29,10 @@ export default function MasonryImageList() {
               loading="lazy"
               src={`data:image/jpeg;base64,${image.base64_image}`}
             />
-            <ImageListItemBar title={image.image_name} />
+            <ImageListItemBar
+              title={image.image_name}
+              subtitle={"@  " + username}
+            />
           </ImageListItem>
         ))}
       </ImageList>

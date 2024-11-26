@@ -24,20 +24,30 @@ function auth(req, res, next) {
   });
 }
 
-async function parseImagesData(rows) {
-  const images = [];
-  for (let record of rows) {
-    const file = await fs.promises.readFile(record.image_path);
-    const fileBuffer = Buffer.from(file).toString("base64");
-    images.push({ ...record, image_buffer: fileBuffer });
-  }
-  return images;
+async function processImages(rows) {
+  const imagePromises = rows.map(async (record) => {
+    try {
+      const buffer = await fs.promises.readFile(`./${record.image_path}`);
+      const base64Image = Buffer.from(buffer).toString("base64");
+      return {
+        ...record,
+        image_buffer: base64Image,
+      };
+    } catch (error) {
+      console.error(`Error reading file: ${record.image_path}`, error);
+      return null;
+    }
+  });
+
+  const images = await Promise.all(imagePromises);
+  return images.reverse(); // lifo
+  ///return images.filter((img) => img !== null);
 }
 
 route.get("/imagesForGallery?:id", auth, async (req, res) => {
   const id = req.query.id;
   Image.findAll({ raw: true, nest: true, where: { gallery_id: id } })
-    .then((rows) => parseImagesData(rows))
+    .then((rows) => processImages(rows))
     .then((data) => res.json(data))
     .catch((err) => res.status(500).json(err));
 });

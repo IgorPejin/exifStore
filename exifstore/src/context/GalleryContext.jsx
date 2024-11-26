@@ -30,6 +30,7 @@ function GalleryProvider({ children }) {
   }, [selectedGallery, token]);
 
   const setGalleryContext = (gallery) => {
+    if (!gallery) setImagesForGallery([]); //again, memoized value would be key here
     setSelectedGallery(gallery);
   };
 
