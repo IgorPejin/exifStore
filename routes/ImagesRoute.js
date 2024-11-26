@@ -28,7 +28,7 @@ async function parseImagesData(rows) {
   const images = [];
   for (let record of rows) {
     const file = await fs.promises.readFile(record.image_path);
-    const fileBuffer = Buffer.from(file);
+    const fileBuffer = Buffer.from(file).toString("base64");
     images.push({ ...record, image_buffer: fileBuffer });
   }
   return images;

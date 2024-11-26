@@ -1,7 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { AuthContext } from "./AuthContext";
 import axiosCall from "../utils/axiosCall";
-import bufferToBase64 from "../utils/bufferToBase64";
 
 const GalleryContext = createContext();
 
@@ -23,8 +22,7 @@ function GalleryProvider({ children }) {
         }
       );
       const images = response.data.map((image) => {
-        const base64 = bufferToBase64(image.image_buffer);
-        return { ...image, base64_image: base64 };
+        return { ...image, base64_image: image.image_buffer };
       });
       setImagesForGallery(images);
     }
