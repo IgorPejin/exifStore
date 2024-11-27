@@ -9,7 +9,6 @@ import { AuthContext } from "../../../../context/AuthContext";
 export default function MasonryImageList() {
   const { imagesForGallery } = useContext(GalleryContext);
   const { username } = useContext(AuthContext);
-  //todo: add loading state
   const images = [...imagesForGallery];
 
   return (

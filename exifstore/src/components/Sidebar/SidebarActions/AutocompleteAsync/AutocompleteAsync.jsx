@@ -8,6 +8,7 @@ import styles from "./AutocompleteAsync.module.css";
 import { IconButton } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import AddCircleIcon from "@mui/icons-material/AddCircle";
 
 import { GalleryContext } from "../../../../context/GalleryContext";
 
@@ -80,6 +81,7 @@ export default function AutocompleteAsync() {
         </IconButton>
       </div>
       <Autocomplete
+        sx={{ marginBottom: "0.5rem" }}
         open={open}
         onOpen={handleOpen}
         onClose={handleClose}
@@ -93,7 +95,7 @@ export default function AutocompleteAsync() {
         renderInput={(params) => (
           <TextField
             {...params}
-            label="Choose gallery"
+            label={selectedOption ? selectedOption.name : "Choose gallery"}
             slotProps={{
               input: {
                 ...params.InputProps,
@@ -110,6 +112,18 @@ export default function AutocompleteAsync() {
           />
         )}
       />
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <IconButton aria-label="add">
+          <span className={styles.addAction}>Add gallery</span>
+          <AddCircleIcon sx={{ color: "#55B" }} />
+        </IconButton>
+      </div>
     </div>
   );
 }

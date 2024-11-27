@@ -4,6 +4,10 @@
 }
 .autocompleteActions {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-around;
   margin-bottom: 1rem;
+}
+.addAction {
+  font-size: 15px;
+  margin-right: 0.5rem;
 }
