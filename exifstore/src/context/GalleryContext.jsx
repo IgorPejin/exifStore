@@ -3,12 +3,15 @@ import { AuthContext } from "./AuthContext";
 import axiosCall from "../utils/axiosCall";
 
 const GalleryContext = createContext();
+const PAGE_LIMIT = 2;
 
 function GalleryProvider({ children }) {
   const [selectedGallery, setSelectedGallery] = useState(null);
   const [loading, setLoading] = useState(false);
   //todo: learn the basics of useMemo so that u can save a request if the selected gallery is the same.
   const [imagesForGallery, setImagesForGallery] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(null);
   const { token } = useContext(AuthContext);
 
   useEffect(() => {
@@ -16,21 +19,23 @@ function GalleryProvider({ children }) {
       setLoading(true);
       const response = await axiosCall(
         "get",
-        `http://localhost:7000/exifstore/imagesForGallery?id=${selectedGallery.id}`,
+        `http://localhost:7000/exifstore/imagesForGallery?id=${selectedGallery.id}&plimit=${PAGE_LIMIT}&currentPage=${currentPage}`,
         undefined,
         {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         }
       );
-      const images = response.data.map((image) => {
+      const images = response.data.images.map((image) => {
         return { ...image, base64_image: image.image_buffer };
       });
+      const totalPages = response.data.count;
+      setTotalPages(totalPages);
       setImagesForGallery(images);
       setLoading(false);
     }
     if (selectedGallery) getImagesForGallery();
-  }, [selectedGallery, token]);
+  }, [selectedGallery, token, currentPage]);
 
   const setGalleryContext = (gallery) => {
     if (!gallery) {
@@ -44,6 +49,10 @@ function GalleryProvider({ children }) {
     selectedGallery,
     imagesForGallery,
     loading,
+    currentPage,
+    setCurrentPage,
+    PAGE_LIMIT,
+    totalPages,
   };
   return (
     <GalleryContext.Provider value={value}>{children}</GalleryContext.Provider>

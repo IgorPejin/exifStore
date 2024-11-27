@@ -24,8 +24,12 @@ function auth(req, res, next) {
   });
 }
 
-async function processImages(rows) {
-  const imagePromises = rows.map(async (record) => {
+async function processImages(rows, plimit, currentPage) {
+  const start = (currentPage - 1) * plimit;
+  const end = start + plimit;
+  const totalPages = rows.length / plimit;
+
+  const imagePromises = rows.slice(start, end).map(async (record) => {
     try {
       const buffer = await fs.promises.readFile(`./${record.image_path}`);
       const base64Image = Buffer.from(buffer).toString("base64");
@@ -40,14 +44,19 @@ async function processImages(rows) {
   });
 
   const images = await Promise.all(imagePromises);
-  return images.reverse(); // lifo
+
+  return { count: totalPages, images: images.reverse() }; // lifo
   ///return images.filter((img) => img !== null);
 }
 
-route.get("/imagesForGallery?:id", auth, async (req, res) => {
+route.get("/imagesForGallery?:query", auth, async (req, res) => {
   const id = req.query.id;
+  const plimit = req.query.plimit;
+  const currentPage = req.query.currentPage;
   Image.findAll({ raw: true, nest: true, where: { gallery_id: id } })
-    .then((rows) => processImages(rows))
+    .then((rows) =>
+      processImages(rows, parseInt(plimit), parseInt(currentPage))
+    )
     .then((data) => res.json(data))
     .catch((err) => res.status(500).json(err));
 });
