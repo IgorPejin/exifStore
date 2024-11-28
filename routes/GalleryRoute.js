@@ -24,6 +24,24 @@ function auth(req, res, next) {
   });
 }
 
+route.post("/addNewGallery", auth, (req, res) => {
+  const userId = req.user.id;
+
+  const newGallery = {
+    name: req.body.newGalleryName,
+    description: "",
+    thumbnail_ref: undefined,
+    user_id: userId,
+  };
+  Gallery.create(newGallery)
+    .then((row) => {
+      res.json(row);
+    })
+    .catch((err) => {
+      res.status(500).json(err);
+    });
+});
+
 route.get("/galleriesForUser", auth, (req, res) => {
   const userId = req.user.id;
   Gallery.findAll({
@@ -35,7 +53,7 @@ route.get("/galleriesForUser", auth, (req, res) => {
       "createdAt",
       "updatedAt",
     ],
-    where: { id: userId },
+    where: { user_id: userId },
   })
     .then((rows) => res.json(rows))
     .catch((err) => res.status(500).json(err));

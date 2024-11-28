@@ -11,6 +11,7 @@ import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 
 import { GalleryContext } from "../../../../context/GalleryContext";
+import { PopUpContext } from "../../../../context/PopUpContext";
 
 function sleep(duration) {
   return new Promise((resolve) => {
@@ -22,12 +23,17 @@ function sleep(duration) {
 
 export default function AutocompleteAsync() {
   const [open, setOpen] = useState(false);
-  const [options, setOptions] = useState([]);
+
   const [loading, setLoading] = useState(false);
   const [selectedOption, setSelectedOption] = useState(null);
 
+  const { setType } = useContext(PopUpContext);
+
+  const [options, setOptions] = useState([]);
+
   const { token } = useContext(AuthContext);
-  const { setGalleryContext } = useContext(GalleryContext);
+  const { setGalleryContext, optionsContext, setOptionsContext } =
+    useContext(GalleryContext);
 
   useEffect(() => {
     async function getGalleriesForUser() {
@@ -47,10 +53,11 @@ export default function AutocompleteAsync() {
         name: gallery.name,
       }));
       setOptions(galleryNames);
+      setOptionsContext(galleryNames);
       setLoading(false);
     }
     getGalleriesForUser();
-  }, [token, options.length]);
+  }, [token, setOptions, setOptionsContext]);
 
   const handleOpen = () => {
     setOpen(true);
@@ -89,7 +96,7 @@ export default function AutocompleteAsync() {
         isOptionEqualToValue={(option, value) => option.id === value.id}
         getOptionLabel={(option) => option.name}
         getOptionKey={(option) => option.id}
-        options={options}
+        options={optionsContext.length === 0 ? options : optionsContext}
         loading={loading}
         value={selectedOption}
         renderInput={(params) => (
@@ -119,7 +126,7 @@ export default function AutocompleteAsync() {
           justifyContent: "center",
         }}
       >
-        <IconButton aria-label="add">
+        <IconButton onClick={() => setType("add_gallery")} aria-label="add">
           <span className={styles.addAction}>Add gallery</span>
           <AddCircleIcon sx={{ color: "#55B" }} />
         </IconButton>

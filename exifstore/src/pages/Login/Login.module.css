@@ -22,9 +22,6 @@
   padding: 0 5rem;
   flex-grow: 1;
 }
-.loginTextBox h1,
-h3 {
-}
 
 .formBox {
   flex-shrink: 1;

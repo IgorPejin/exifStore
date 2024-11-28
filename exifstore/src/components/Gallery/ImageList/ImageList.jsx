@@ -18,7 +18,7 @@ function ImageList() {
       <div className={styles.imageListWrapper}>
         {loading ? <CircularProgress /> : <MasonryImageList />}
       </div>
-      {selectedGallery && totalPages && (
+      {!!selectedGallery && !!totalPages && (
         <div className={styles.imageListActionBox}>
           <Pagination
             count={totalPages}
