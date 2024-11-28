@@ -1,9 +1,10 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { AuthContext } from "./AuthContext";
 import axiosCall from "../utils/axiosCall";
+import { FilterContext } from "./FilterContext";
 
 const GalleryContext = createContext();
-const PAGE_LIMIT = 2;
+const PAGE_LIMIT = 2; // 50 would be ideal
 
 function GalleryProvider({ children }) {
   const [selectedGallery, setSelectedGallery] = useState(null);
@@ -13,6 +14,7 @@ function GalleryProvider({ children }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(null);
   const { token } = useContext(AuthContext);
+  const { setDate } = useContext(FilterContext);
 
   useEffect(() => {
     async function getImagesForGallery() {
@@ -41,6 +43,7 @@ function GalleryProvider({ children }) {
     if (!gallery) {
       setImagesForGallery([]);
     } //again, memoized value would be key here
+    setDate(null); // date set to null when switch gallery context, u need to test this
     setSelectedGallery(gallery);
   };
 
