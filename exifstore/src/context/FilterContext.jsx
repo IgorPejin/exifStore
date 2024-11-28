@@ -3,12 +3,22 @@ import dayjs from "dayjs";
 
 const FilterContext = createContext();
 
+const INITIAL_FILTER = {
+  date: dayjs(null),
+};
+
 function FilterProvider({ children }) {
-  const [date, setDate] = useState(dayjs(null));
+  const [filter, setFilter] = useState(INITIAL_FILTER);
+
+  const updateFilter = (property, value) => {
+    const updatedFilter = { ...filter };
+    updatedFilter[property] = value;
+    setFilter(updatedFilter);
+  };
 
   const value = {
-    setDate,
-    date,
+    updateFilter,
+    filter,
   };
   return (
     <FilterContext.Provider value={value}>{children}</FilterContext.Provider>

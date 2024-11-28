@@ -10,10 +10,10 @@ import { FilterContext } from "../../../context/FilterContext";
 
 function ImageFilter() {
   const { selectedGallery } = useContext(GalleryContext);
-  const { setDate, date } = useContext(FilterContext);
+  const { updateFilter, filter } = useContext(FilterContext);
 
   function handleChange(newValue) {
-    setDate(newValue);
+    updateFilter("date", newValue);
   }
 
   return (
@@ -24,7 +24,7 @@ function ImageFilter() {
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <DesktopDatePicker
           disabled={selectedGallery ? false : true}
-          value={date}
+          value={filter.date}
           onChange={(newValue) => handleChange(newValue)}
         ></DesktopDatePicker>
       </LocalizationProvider>

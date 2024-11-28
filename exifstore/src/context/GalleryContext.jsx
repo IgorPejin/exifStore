@@ -15,7 +15,7 @@ function GalleryProvider({ children }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(null);
   const { token } = useContext(AuthContext);
-  const { setDate } = useContext(FilterContext);
+  const { updateFilter } = useContext(FilterContext);
 
   useEffect(() => {
     async function getImagesForGallery() {
@@ -45,7 +45,7 @@ function GalleryProvider({ children }) {
     if (!gallery) {
       setImagesForGallery([]);
     } //again, memoized value would be key here
-    setDate(null); // date set to null when switch gallery context, u need to test this
+    updateFilter("date", null); // date set to null when switch gallery context, u need to test this
     setSelectedGallery(gallery);
   };
 
