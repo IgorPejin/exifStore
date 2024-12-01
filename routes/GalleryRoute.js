@@ -24,6 +24,16 @@ function auth(req, res, next) {
   });
 }
 
+route.delete("/deleteGalleryById?:id", auth, (req, res) => {
+  Gallery.destroy({ where: { id: req.query.id } })
+    .then((row) => {
+      res.status(200).json({ msg: "Sucess" });
+    })
+    .catch((err) => {
+      res.status(500).json({ msg: "Failed" });
+    });
+});
+
 route.post("/addNewGallery", auth, (req, res) => {
   const userId = req.user.id;
 

@@ -2,12 +2,12 @@ import styles from "./NewGalleryPopUp.module.css";
 import { TextField, IconButton, Button } from "@mui/material";
 import UndoIcon from "@mui/icons-material/Undo";
 import { useContext, useState } from "react";
-import { PopUpContext } from "../../../context/PopUpContext";
-import axiosCall from "../../../utils/axiosCall";
-import { AuthContext } from "../../../context/AuthContext";
-import { GalleryContext } from "../../../context/GalleryContext";
+import { PopUpContext } from "../../../../context/PopUpContext";
+import axiosCall from "../../../../utils/axiosCall";
+import { AuthContext } from "../../../../context/AuthContext";
+import { GalleryContext } from "../../../../context/GalleryContext";
 
-function NewGalleryPopUp() {
+function NewGalleryPopUp({ boxStyle }) {
   const [newGalleryName, setNewGalleryName] = useState("");
   const { setType } = useContext(PopUpContext);
   const { token } = useContext(AuthContext);
@@ -46,7 +46,7 @@ function NewGalleryPopUp() {
   }
 
   return (
-    <div className={styles.popUpBox}>
+    <div className={boxStyle}>
       <form onSubmit={handleSubmit} className={styles.popUpFormWrapper}>
         <IconButton
           onClick={handleBackButton}

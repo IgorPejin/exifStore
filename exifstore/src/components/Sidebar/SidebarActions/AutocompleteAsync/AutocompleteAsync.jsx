@@ -23,17 +23,15 @@ function sleep(duration) {
 
 export default function AutocompleteAsync() {
   const [open, setOpen] = useState(false);
-
   const [loading, setLoading] = useState(false);
-  const [selectedOption, setSelectedOption] = useState(null);
-
   const { setType } = useContext(PopUpContext);
-
-  const [options, setOptions] = useState([]);
-
   const { token } = useContext(AuthContext);
-  const { setGalleryContext, optionsContext, setOptionsContext } =
-    useContext(GalleryContext);
+  const {
+    selectedGallery,
+    setGalleryContext,
+    optionsContext,
+    setOptionsContext,
+  } = useContext(GalleryContext);
 
   useEffect(() => {
     async function getGalleriesForUser() {
@@ -52,12 +50,11 @@ export default function AutocompleteAsync() {
         id: gallery.id,
         name: gallery.name,
       }));
-      setOptions(galleryNames);
       setOptionsContext(galleryNames);
       setLoading(false);
     }
     getGalleriesForUser();
-  }, [token, setOptions, setOptionsContext]);
+  }, [token, setOptionsContext]);
 
   const handleOpen = () => {
     setOpen(true);
@@ -68,7 +65,6 @@ export default function AutocompleteAsync() {
   };
 
   const handleChange = (e, newValue) => {
-    setSelectedOption(newValue);
     setGalleryContext(newValue);
   };
 
@@ -76,19 +72,22 @@ export default function AutocompleteAsync() {
     <div className={styles.autocompleteBox}>
       <div
         style={
-          selectedOption ? { visibility: "visible" } : { visibility: "hidden" }
+          selectedGallery ? { visibility: "visible" } : { visibility: "hidden" }
         }
         className={styles.autocompleteActions}
       >
-        <IconButton aria-label="edit">
+        <IconButton onClick={() => setType("edit_gallery")} aria-label="edit">
           <EditIcon sx={{ color: "#55B" }} />
         </IconButton>
-        <IconButton aria-label="delete">
+        <IconButton
+          onClick={() => setType("delete_gallery")}
+          aria-label="delete"
+        >
           <DeleteForeverIcon sx={{ color: "#55B" }} />
         </IconButton>
       </div>
       <Autocomplete
-        sx={{ marginBottom: "0.5rem" }}
+        sx={{ margin: "1rem 0" }}
         open={open}
         onOpen={handleOpen}
         onClose={handleClose}
@@ -96,13 +95,13 @@ export default function AutocompleteAsync() {
         isOptionEqualToValue={(option, value) => option.id === value.id}
         getOptionLabel={(option) => option.name}
         getOptionKey={(option) => option.id}
-        options={optionsContext.length === 0 ? options : optionsContext}
+        options={optionsContext}
         loading={loading}
-        value={selectedOption}
+        value={selectedGallery}
         renderInput={(params) => (
           <TextField
             {...params}
-            label={selectedOption ? selectedOption.name : "Choose gallery"}
+            label={selectedGallery ? selectedGallery.name : "Choose gallery"}
             slotProps={{
               input: {
                 ...params.InputProps,
@@ -127,7 +126,7 @@ export default function AutocompleteAsync() {
         }}
       >
         <IconButton onClick={() => setType("add_gallery")} aria-label="add">
-          <span className={styles.addAction}>Add gallery</span>
+          <span className={styles.addAction}>Add new gallery </span>
           <AddCircleIcon sx={{ color: "#55B" }} />
         </IconButton>
       </div>

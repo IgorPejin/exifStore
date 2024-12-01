@@ -6,12 +6,19 @@ function SidebarActions() {
   return (
     <div className={styles.buttonBox}>
       <AutoCompleteAsync />
-      <Button variant="contained" size="large" sx={{ backgroundColor: "#55B" }}>
-        Liked images
-      </Button>
-      <Button variant="contained" size="large" color="success">
-        Explore
-      </Button>
+      {/* todo in future: likes,comments,explore */}
+      <div style={{ display: "none" }}>
+        <Button
+          variant="contained"
+          size="large"
+          sx={{ backgroundColor: "#55B" }}
+        >
+          Liked images
+        </Button>
+        <Button variant="contained" size="large" color="success">
+          Explore
+        </Button>
+      </div>
     </div>
   );
 }

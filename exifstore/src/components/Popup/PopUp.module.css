@@ -7,3 +7,12 @@
   height: 100%;
   z-index: 1;
 }
+
+.popUpBox {
+  background: #55b;
+  width: 600px;
+  height: 300px;
+  border: 5px solid whitesmoke;
+  outline: 1px solid #55b;
+  color: whitesmoke;
+}

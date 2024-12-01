@@ -54,8 +54,23 @@ function GalleryProvider({ children }) {
     setOptionsContext(newOptions);
   };
 
+  const deleteOption = (galleryToDelete) => {
+    console.log(galleryToDelete.id, optionsContext);
+    const newOptions = optionsContext.filter(
+      (gallery) => gallery.id !== galleryToDelete.id
+    );
+    setOptionsContext(newOptions);
+  };
+
+  const resetImageList = () => {
+    setImagesForGallery([]);
+    setCurrentPage(1);
+    setTotalPages(null);
+  };
+
   const value = {
     setGalleryContext,
+    setSelectedGallery,
     selectedGallery,
     imagesForGallery,
     loading,
@@ -64,8 +79,10 @@ function GalleryProvider({ children }) {
     PAGE_LIMIT,
     totalPages,
     addOption,
+    deleteOption,
     setOptionsContext,
     optionsContext,
+    resetImageList,
   };
   return (
     <GalleryContext.Provider value={value}>{children}</GalleryContext.Provider>
