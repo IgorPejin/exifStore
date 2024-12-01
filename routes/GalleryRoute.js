@@ -24,6 +24,22 @@ function auth(req, res, next) {
   });
 }
 
+route.put("/updateGalleryById?:id", auth, (req, res) => {
+  // object here to pass in update method when u decide to do thumbnails
+  Gallery.update(
+    {
+      name: req.body.newGalleryName,
+    },
+    { where: { id: req.query.id } }
+  )
+    .then((row) => {
+      res.status(200).json({ msg: "Sucess" });
+    })
+    .catch((err) => {
+      res.status(500).json({ msg: "Failed" });
+    });
+});
+
 route.delete("/deleteGalleryById?:id", auth, (req, res) => {
   Gallery.destroy({ where: { id: req.query.id } })
     .then((row) => {

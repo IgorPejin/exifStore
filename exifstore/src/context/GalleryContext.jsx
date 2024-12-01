@@ -54,6 +54,17 @@ function GalleryProvider({ children }) {
     setOptionsContext(newOptions);
   };
 
+  const updateOption = (updatedName) => {
+    const newOptions = optionsContext.map((gallery) => {
+      if (gallery.id === selectedGallery.id) {
+        const newSelectedGallery = { ...gallery, name: updatedName };
+        setSelectedGallery(newSelectedGallery);
+        return newSelectedGallery;
+      }
+    });
+    setOptionsContext(newOptions);
+  };
+
   const deleteOption = (galleryToDelete) => {
     console.log(galleryToDelete.id, optionsContext);
     const newOptions = optionsContext.filter(
@@ -80,6 +91,7 @@ function GalleryProvider({ children }) {
     totalPages,
     addOption,
     deleteOption,
+    updateOption,
     setOptionsContext,
     optionsContext,
     resetImageList,

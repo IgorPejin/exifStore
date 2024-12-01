@@ -1,0 +1,33 @@
+.editPopUp {
+  position: relative;
+  height: 100%;
+  display: flex;
+}
+.editWrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 2.5rem;
+}
+
+.editForm {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  height: 100%;
+}
+.editThumbnail {
+  width: 200px;
+  height: 200px;
+  object-fit: cover;
+}
+.editButton {
+  background-color: whitesmoke;
+  color: #55b;
+  transition: all 0.2s ease-in;
+}
+.editButton:hover {
+  background-color: #55d;
+  color: whitesmoke;
+}

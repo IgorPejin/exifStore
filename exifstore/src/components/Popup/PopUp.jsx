@@ -3,6 +3,7 @@ import { PopUpContext } from "../../context/PopUpContext";
 import styles from "./PopUp.module.css";
 import NewGalleryPopUp from "./PopUpTypes/NewGalleryPopUp/NewGalleryPopUp";
 import YesNoPopUp from "./PopUpTypes/YesNoPopUp/YesNoPopUp";
+import EditGalleryPopUp from "./PopUpTypes/EditGalleryPopUp/EditGalleryPopUp";
 
 function PopUp() {
   const { type } = useContext(PopUpContext);
@@ -14,6 +15,9 @@ function PopUp() {
     >
       {type === "add_gallery" && <NewGalleryPopUp boxStyle={styles.popUpBox} />}
       {type === "delete_gallery" && <YesNoPopUp boxStyle={styles.popUpBox} />}
+      {type === "edit_gallery" && (
+        <EditGalleryPopUp boxStyle={styles.popUpBox} />
+      )}
     </div>
   );
 }

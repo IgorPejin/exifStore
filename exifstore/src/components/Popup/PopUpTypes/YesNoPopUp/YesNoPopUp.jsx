@@ -22,7 +22,6 @@ function YesNoPopUp({ boxStyle }) {
       undefined,
       { "Content-Type": "application/json", Authorization: `Bearer ${token}` }
     );
-    console.log(response);
     if (response.status === 200) {
       deleteOption(selectedGallery);
       setSelectedGallery(null);
