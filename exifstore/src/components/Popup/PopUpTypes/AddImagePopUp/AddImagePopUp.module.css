@@ -1,0 +1,39 @@
+.addImageBox {
+  position: relative;
+  height: 100%;
+  display: flex;
+}
+
+.addImageWrapper {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  width: 100%;
+  padding: 2.5rem;
+}
+
+.addImageForm {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  height: 100%;
+}
+
+.imageThumbnail {
+  width: 200px;
+  height: 200px;
+  object-fit: cover;
+}
+.addButton {
+  background-color: whitesmoke;
+  color: #55b;
+  transition: all 0.2s ease-in;
+}
+.addButtonFilled {
+  background-color: coral;
+  color: whitesmoke;
+}
+.addButton:hover {
+  background-color: #55d;
+  color: whitesmoke;
+}

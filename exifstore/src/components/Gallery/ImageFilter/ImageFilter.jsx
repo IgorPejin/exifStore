@@ -29,7 +29,7 @@ function ImageFilter() {
         ></DesktopDatePicker>
       </LocalizationProvider>
       <Button variant="contained" size="large" sx={{ backgroundColor: "#55B" }}>
-        Show exif filters
+        Show advanced filters
       </Button>
     </div>
   );

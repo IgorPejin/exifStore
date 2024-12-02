@@ -2,11 +2,13 @@ const express = require("express");
 const jwt = require("jsonwebtoken");
 const Joi = require("joi");
 const fs = require("fs");
+const fileupload = require("express-fileupload");
 require("dotenv").config();
 
 const { Image } = require("../models");
 const route = express.Router();
 route.use(express.json());
+route.use(fileupload());
 route.use(express.urlencoded({ extended: true }));
 
 function auth(req, res, next) {
@@ -23,6 +25,14 @@ function auth(req, res, next) {
     next();
   });
 }
+
+route.post("/imageUpload?:id", auth, (req, res) => {
+  const id = req.query.id;
+  const userId = req.user.id;
+  const file = req.files;
+  console.log(file.image, userId, file);
+  //todo process uploaded image
+});
 
 async function processImages(rows, plimit, currentPage) {
   const start = (currentPage - 1) * plimit;
