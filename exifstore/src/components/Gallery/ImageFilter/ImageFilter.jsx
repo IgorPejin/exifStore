@@ -23,7 +23,6 @@ function ImageFilter() {
       </h1>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <DesktopDatePicker
-          disabled={selectedGallery ? false : true}
           value={filter.date}
           onChange={(newValue) => handleChange(newValue)}
         ></DesktopDatePicker>

@@ -20,9 +20,10 @@ function GalleryProvider({ children }) {
   useEffect(() => {
     async function getImagesForGallery() {
       setLoading(true);
+      const id = selectedGallery ? selectedGallery.id : 0;
       const response = await axiosCall(
         "get",
-        `http://localhost:7000/exifstore/imagesForGallery?id=${selectedGallery.id}&plimit=${PAGE_LIMIT}&currentPage=${currentPage}`,
+        `http://localhost:7000/exifstore/imagesForGallery?id=${id}&plimit=${PAGE_LIMIT}&currentPage=${currentPage}`,
         undefined,
         {
           "Content-Type": "application/json",
@@ -38,10 +39,11 @@ function GalleryProvider({ children }) {
       setImagesForGallery(images);
       setLoading(false);
     }
-    if (selectedGallery) getImagesForGallery();
+    getImagesForGallery();
   }, [selectedGallery, token, currentPage]);
 
   const setGalleryContext = (gallery) => {
+    setCurrentPage(1);
     if (!gallery) {
       setImagesForGallery([]);
     } //again, memoized value would be key here

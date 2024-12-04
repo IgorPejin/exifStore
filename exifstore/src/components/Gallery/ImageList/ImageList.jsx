@@ -9,7 +9,7 @@ import { GalleryContext } from "../../../context/GalleryContext";
 import { PopUpContext } from "../../../context/PopUpContext";
 
 function ImageList() {
-  const { currentPage, setCurrentPage, loading, totalPages, selectedGallery } =
+  const { currentPage, setCurrentPage, loading, totalPages } =
     useContext(GalleryContext);
   const { setType } = useContext(PopUpContext);
   const handleChange = (event, value) => {
@@ -21,7 +21,7 @@ function ImageList() {
       <div className={styles.imageListWrapper}>
         {loading ? <CircularProgress /> : <MasonryImageList />}
       </div>
-      {!!selectedGallery && !!totalPages && (
+      {!!totalPages && (
         <div className={styles.imageListActionBox}>
           <Pagination
             count={totalPages}

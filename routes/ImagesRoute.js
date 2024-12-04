@@ -37,7 +37,7 @@ route.post("/imageUpload?:id", auth, (req, res) => {
 async function processImages(rows, plimit, currentPage) {
   const start = (currentPage - 1) * plimit;
   const end = start + plimit;
-  const totalPages = rows.length / plimit;
+  const totalPages = Math.ceil(rows.length / plimit);
 
   const imagePromises = rows.slice(start, end).map(async (record) => {
     try {
@@ -63,12 +63,22 @@ route.get("/imagesForGallery?:query", auth, async (req, res) => {
   const id = req.query.id;
   const plimit = req.query.plimit;
   const currentPage = req.query.currentPage;
-  Image.findAll({ raw: true, nest: true, where: { gallery_id: id } })
-    .then((rows) =>
-      processImages(rows, parseInt(plimit), parseInt(currentPage))
-    )
-    .then((data) => res.json(data))
-    .catch((err) => res.status(500).json(err));
+
+  if (id != 0) {
+    Image.findAll({ raw: true, nest: true, where: { gallery_id: id } })
+      .then((rows) =>
+        processImages(rows, parseInt(plimit), parseInt(currentPage))
+      )
+      .then((data) => res.json(data))
+      .catch((err) => res.status(500).json(err));
+  } else {
+    Image.findAll({ raw: true, nest: true })
+      .then((rows) =>
+        processImages(rows, parseInt(plimit), parseInt(currentPage))
+      )
+      .then((data) => res.json(data))
+      .catch((err) => res.status(500).json(err));
+  }
 });
 
 module.exports = route;

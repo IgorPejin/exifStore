@@ -2,8 +2,9 @@
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class Image extends Model {
-    static associate({ Gallery }) {
+    static associate({ Gallery, User }) {
       this.belongsTo(Gallery, { foreignKey: "gallery_id", as: "gallery" });
+      this.belongsTo(User, { foreignKey: "user_id", as: "user" });
     }
   }
   Image.init(
@@ -22,6 +23,7 @@ module.exports = (sequelize, DataTypes) => {
       date_time: DataTypes.STRING,
       date_time_offset: DataTypes.STRING,
       gallery_id: DataTypes.INTEGER,
+      user_id: DataTypes.INTEGER,
     },
     {
       sequelize,
