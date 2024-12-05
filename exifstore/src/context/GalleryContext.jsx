@@ -30,10 +30,7 @@ function GalleryProvider({ children }) {
           Authorization: `Bearer ${token}`,
         }
       );
-      // todo: check what happens if response is error
-      const images = response.data.images.map((image) => {
-        return { ...image, base64_image: image.image_buffer };
-      });
+      const images = response.data.images;
       const totalPages = response.data.count;
       setTotalPages(totalPages);
       setImagesForGallery(images);

@@ -20,7 +20,7 @@ module.exports = {
           f_number: 3.2,
           date_time: "2023-06-20T13:02:03.000Z",
           date_time_offset: "+02:00",
-          gallery_id: null,
+          gallery_id: 0,
           user_id: 1,
         },
       ],

@@ -54,21 +54,35 @@ function AddImagePopUp({ boxStyle }) {
   async function handleSubmit(e) {
     e.preventDefault();
 
+    const id = selectedGallery ? selectedGallery.id : 0;
+
+    let confirmStatus = true;
+    if (id == 0) {
+      if (
+        confirm(
+          "You have not sellected a gallery. Do you wish to add the image without a gallery?"
+        ) === true
+      ) {
+        confirmStatus = true;
+      } else confirmStatus = false;
+    }
+
     const formData = new FormData();
-
     formData.append("image", image);
-    console.log(formData);
+    formData.append("confirm", confirmStatus);
 
-    const response = await axiosCall(
-      "post",
-      `http://localhost:7000/exifstore/imageUpload?id=${selectedGallery.id}`,
-      formData,
-      {
-        "Content-Type": "multipart/form-data",
-        Authorization: `Bearer ${token}`,
-      }
-    );
-    console.log(response);
+    if (confirmStatus) {
+      const response = await axiosCall(
+        "post",
+        `http://localhost:7000/exifstore/imageUpload?id=${id}`,
+        formData,
+        {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}`,
+        }
+      );
+      console.log(response);
+    }
   }
 
   function handleAddImage(e) {

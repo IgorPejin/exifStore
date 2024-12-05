@@ -2,7 +2,9 @@ const express = require("express");
 const jwt = require("jsonwebtoken");
 const Joi = require("joi");
 const fs = require("fs");
+const path = require("path");
 const fileupload = require("express-fileupload");
+const exifr = require("exifr");
 require("dotenv").config();
 
 const { Image } = require("../models");
@@ -26,12 +28,69 @@ function auth(req, res, next) {
   });
 }
 
-route.post("/imageUpload?:id", auth, (req, res) => {
-  const id = req.query.id;
+route.post("/imageUpload?:id", auth, async (req, res) => {
+  let id = parseInt(req.query.id);
   const userId = req.user.id;
-  const file = req.files;
-  console.log(file.image, userId, file);
-  //todo process uploaded image
+  const files = req.files;
+  const image = files.image;
+  const imageName = image.name;
+  const confirm = req.body.confirm;
+
+  let filePath;
+  let storagePath;
+
+  try {
+    if (confirm && id === 0) {
+      storagePath = `storage/g${userId}/${imageName}`;
+      filePath = path.join(__dirname, "..") + "/" + storagePath;
+      id = null;
+    } else {
+      storagePath = `storage/g${userId}/g${id}/${imageName}`;
+      filePath = path.join(__dirname, "..") + "/" + storagePath;
+    }
+
+    await fs.promises.appendFile(filePath, image.data);
+
+    const exifData = await exifr.parse(filePath, {
+      pick: [
+        "Make",
+        "Model",
+        "ISO",
+        "ExposureTime",
+        "Flash",
+        "FNumber",
+        "DateTimeOriginal",
+        "OffsetTimeOriginal",
+      ],
+    });
+
+    const newImage = {
+      image_name: imageName,
+      image_width: 0,
+      image_height: 0,
+      image_path: storagePath,
+      make: exifData.Make,
+      model: exifData.Model,
+      iso: exifData.ISO,
+      exposure_time: exifData.ExposureTime,
+      ev: 0,
+      flash: exifData.Flash,
+      f_number: exifData.FNumber,
+      date_time: exifData.DateTimeOriginal.toISOString(),
+      date_time_offset: exifData.OffsetTimeOriginal,
+      gallery_id: id,
+      user_id: userId,
+    };
+    Image.create(newImage)
+      .then((row) => {
+        res.json(row);
+      })
+      .catch((err) => {
+        res.status(500).json(err);
+      });
+  } catch (error) {
+    console.error(`Error while writing file: ${filePath}`, error);
+  }
 });
 
 async function processImages(rows, plimit, currentPage) {
@@ -54,7 +113,6 @@ async function processImages(rows, plimit, currentPage) {
   });
 
   const images = await Promise.all(imagePromises);
-
   return { count: totalPages, images: images.reverse() }; // lifo
   ///return images.filter((img) => img !== null);
 }

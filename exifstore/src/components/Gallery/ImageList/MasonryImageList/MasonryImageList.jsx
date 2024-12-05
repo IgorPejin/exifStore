@@ -26,7 +26,7 @@ export default function MasonryImageList() {
             <img
               className={styles.image}
               loading="lazy"
-              src={`data:image/jpeg;base64,${image.base64_image}`}
+              src={`data:image/jpeg;base64,${image.image_buffer}`}
             />
             <ImageListItemBar
               title={image.image_name}
