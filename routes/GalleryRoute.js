@@ -1,6 +1,8 @@
 const express = require("express");
 const jwt = require("jsonwebtoken");
 const Joi = require("joi");
+const fs = require("fs");
+const path = require("path");
 require("dotenv").config();
 
 const { Gallery } = require("../models");
@@ -41,11 +43,16 @@ route.put("/updateGalleryById?:id", auth, (req, res) => {
 });
 
 route.delete("/deleteGalleryById?:id", auth, (req, res) => {
+  const userId = req.user.id;
   Gallery.destroy({ where: { id: req.query.id } })
-    .then((row) => {
+    .then(async (row) => {
+      const galleryPath =
+        path.join(__dirname, "..") + `/storage/g${userId}/g${req.query.id}`;
+      await fs.promises.rm(galleryPath, { recursive: true });
       res.status(200).json({ msg: "Sucess" });
     })
     .catch((err) => {
+      console.log(err);
       res.status(500).json({ msg: "Failed" });
     });
 });
@@ -59,8 +66,13 @@ route.post("/addNewGallery", auth, (req, res) => {
     thumbnail_ref: undefined,
     user_id: userId,
   };
+
   Gallery.create(newGallery)
-    .then((row) => {
+    .then(async (row) => {
+      const galleryPath =
+        path.join(__dirname, "..") +
+        `/storage/g${userId}/g${row.dataValues.id}`;
+      await fs.promises.mkdir(galleryPath);
       res.json(row);
     })
     .catch((err) => {

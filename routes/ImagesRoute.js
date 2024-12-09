@@ -5,9 +5,11 @@ const fs = require("fs");
 const path = require("path");
 const fileupload = require("express-fileupload");
 const exifr = require("exifr");
+const sizeOf = require("image-size");
 require("dotenv").config();
 
 const { Image } = require("../models");
+const calculateEV = require("../utils/math/math");
 const route = express.Router();
 route.use(express.json());
 route.use(fileupload());
@@ -61,19 +63,24 @@ route.post("/imageUpload?:id", auth, async (req, res) => {
         "FNumber",
         "DateTimeOriginal",
         "OffsetTimeOriginal",
+        "ShutterSpeedValue",
+        "ApertureValue",
       ],
     });
 
+    const ev = calculateEV(exifData.FNumber, exifData.ExposureTime);
+    const dimensions = sizeOf(image.data);
+
     const newImage = {
       image_name: imageName,
-      image_width: 0,
-      image_height: 0,
+      image_width: dimensions.width,
+      image_height: dimensions.height,
       image_path: storagePath,
       make: exifData.Make,
       model: exifData.Model,
       iso: exifData.ISO,
       exposure_time: exifData.ExposureTime,
-      ev: 0,
+      ev: ev,
       flash: exifData.Flash,
       f_number: exifData.FNumber,
       date_time: exifData.DateTimeOriginal.toISOString(),
