@@ -20,7 +20,7 @@ export default function MasonryImageList() {
         marginTop: "0.5rem",
       }}
     >
-      <ImageList sx={{ padding: "1rem" }} variant="masonry" cols={3} gap={20}>
+      <ImageList sx={{ padding: "1rem" }} variant="masonry" cols={4} gap={20}>
         {images.map((image) => (
           <ImageListItem key={image.id}>
             <img

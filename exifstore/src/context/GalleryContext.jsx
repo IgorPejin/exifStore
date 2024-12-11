@@ -4,16 +4,20 @@ import axiosCall from "../utils/axiosCall";
 import { FilterContext } from "./FilterContext";
 
 const GalleryContext = createContext();
-const PAGE_LIMIT = 3; // 50 would be ideal
+const PAGE_LIMIT = 16; // 50 would be ideal
 
 function GalleryProvider({ children }) {
   const [selectedGallery, setSelectedGallery] = useState(null);
   const [optionsContext, setOptionsContext] = useState([]);
+
   const [loading, setLoading] = useState(false);
+
   //todo: learn the basics of useMemo so that u can save a request if the selected gallery is the same.
   const [imagesForGallery, setImagesForGallery] = useState([]);
+
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(null);
+
   const { token } = useContext(AuthContext);
   const { updateFilter } = useContext(FilterContext);
 
@@ -53,6 +57,11 @@ function GalleryProvider({ children }) {
     setOptionsContext(newOptions);
   };
 
+  const addImage = (newImage) => {
+    const newImages = [...imagesForGallery, newImage];
+    setImagesForGallery(newImages);
+  };
+
   const updateOption = (updatedName) => {
     const newOptions = optionsContext.map((gallery) => {
       if (gallery.id === selectedGallery.id) {
@@ -89,6 +98,7 @@ function GalleryProvider({ children }) {
     PAGE_LIMIT,
     totalPages,
     addOption,
+    addImage,
     deleteOption,
     updateOption,
     setOptionsContext,

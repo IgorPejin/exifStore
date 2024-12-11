@@ -52,6 +52,8 @@ route.post("/imageUpload?:id", auth, async (req, res) => {
     }
 
     await fs.promises.appendFile(filePath, image.data);
+    const buffer = await fs.promises.readFile(filePath);
+    const base64Image = Buffer.from(buffer).toString("base64");
 
     const exifData = await exifr.parse(filePath, {
       pick: [
@@ -90,7 +92,7 @@ route.post("/imageUpload?:id", auth, async (req, res) => {
     };
     Image.create(newImage)
       .then((row) => {
-        res.json(row);
+        res.json({ ...row.dataValues, image_buffer: base64Image });
       })
       .catch((err) => {
         res.status(500).json(err);

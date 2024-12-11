@@ -5,8 +5,22 @@ const exifStoreApp = express();
 
 exifStoreApp.listen({ port: process.env.EXIF_APP_PORT }, () => {
   console.log("exifStore running...");
-  // (async () => {
-  //   console.log(await exifr.parse("storage/g1/IMG_4369.JPG")); // 2022 04 15
-  //   console.log(await exifr.parse("storage/g1/IMG_7062.JPG")); //2023 06 20
-  // })();
+  (async () => {
+    // const filePath = "";
+    // const exifData = await exifr.parse(filePath, {
+    //   pick: [
+    //     "Make",
+    //     "Model",
+    //     "ISO",
+    //     "ExposureTime",
+    //     "Flash",
+    //     "FNumber",
+    //     "DateTimeOriginal",
+    //     "OffsetTimeOriginal",
+    //     "ShutterSpeedValue",
+    //     "ApertureValue",
+    //   ],
+    // });
+    // console.log(exifData);
+  })();
 });

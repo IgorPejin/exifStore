@@ -24,7 +24,7 @@ const VisuallyHiddenInput = styled("input")({
 function AddImagePopUp({ boxStyle }) {
   const { setType } = useContext(PopUpContext);
   const { token } = useContext(AuthContext);
-  const { selectedGallery } = useContext(GalleryContext);
+  const { selectedGallery, addImage } = useContext(GalleryContext);
 
   const [image, setImage] = useState(null);
 
@@ -81,11 +81,15 @@ function AddImagePopUp({ boxStyle }) {
           Authorization: `Bearer ${token}`,
         }
       );
-      console.log(response);
+      const image = response.data;
+      console.log(image);
+      addImage(image);
+      setType(null);
     }
   }
 
   function handleAddImage(e) {
+    // clear image name of extensions : todo
     setImage(e.target.files[0]); // one image for now
   }
 
