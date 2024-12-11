@@ -25,6 +25,8 @@ export default function MasonryImageList() {
           <ImageListItem key={image.id}>
             <img
               className={styles.image}
+              // width="100%"
+              // height="100%"
               loading="lazy"
               src={`data:image/jpeg;base64,${image.image_buffer}`}
             />

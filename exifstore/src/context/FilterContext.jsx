@@ -4,7 +4,7 @@ import dayjs from "dayjs";
 const FilterContext = createContext();
 
 const INITIAL_FILTER = {
-  date: dayjs(null),
+  date_time: dayjs(null),
 };
 
 function FilterProvider({ children }) {

@@ -25,7 +25,8 @@ function BottomNav() {
           <ListItemButton
             sx={{ textAlign: "center" }}
             component="a"
-            href="https://github.com/IgorPejin"
+            href="https://github.com/IgorPejin/exifStore"
+            target="_blank"
           >
             <ListItemIcon>
               <GitHubIcon />

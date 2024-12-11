@@ -4,7 +4,7 @@ import axiosCall from "../utils/axiosCall";
 import { FilterContext } from "./FilterContext";
 
 const GalleryContext = createContext();
-const PAGE_LIMIT = 16; // 50 would be ideal
+const PAGE_LIMIT = 10; // 50 would be ideal
 
 function GalleryProvider({ children }) {
   const [selectedGallery, setSelectedGallery] = useState(null);
@@ -20,6 +20,8 @@ function GalleryProvider({ children }) {
 
   const { token } = useContext(AuthContext);
   const { updateFilter } = useContext(FilterContext);
+
+  const [refresh, setRefresh] = useState(false);
 
   useEffect(() => {
     async function getImagesForGallery() {
@@ -38,17 +40,22 @@ function GalleryProvider({ children }) {
       const totalPages = response.data.count;
       setTotalPages(totalPages);
       setImagesForGallery(images);
+      setRefresh(false);
       setLoading(false);
     }
-    getImagesForGallery();
-  }, [selectedGallery, token, currentPage]);
+    if (imagesForGallery.length == 0 || refresh) {
+      console.log("refreshing images");
+      getImagesForGallery();
+    }
+  }, [selectedGallery, token, currentPage, imagesForGallery.length, refresh]);
 
   const setGalleryContext = (gallery) => {
+    setRefresh(true);
     setCurrentPage(1);
     if (!gallery) {
       setImagesForGallery([]);
     } //again, memoized value would be key here
-    updateFilter("date", null); // date set to null when switch gallery context, u need to test this
+    updateFilter("date_time", null); // date set to null when switch gallery context, u need to test this
     setSelectedGallery(gallery);
   };
 
@@ -59,6 +66,7 @@ function GalleryProvider({ children }) {
 
   const addImage = (newImage) => {
     const newImages = [...imagesForGallery, newImage];
+    setRefresh(true);
     setImagesForGallery(newImages);
   };
 
@@ -92,6 +100,7 @@ function GalleryProvider({ children }) {
     setSelectedGallery,
     selectedGallery,
     imagesForGallery,
+    setImagesForGallery,
     loading,
     currentPage,
     setCurrentPage,
@@ -104,6 +113,7 @@ function GalleryProvider({ children }) {
     setOptionsContext,
     optionsContext,
     resetImageList,
+    setRefresh,
   };
   return (
     <GalleryContext.Provider value={value}>{children}</GalleryContext.Provider>

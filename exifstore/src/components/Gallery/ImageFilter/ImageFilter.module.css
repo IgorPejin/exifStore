@@ -1,4 +1,4 @@
-.imageFilterBox {
+.imageFilterWrapper {
   background-color: whitesmoke;
   border-bottom: 1px solid #555;
   display: flex;
@@ -6,4 +6,16 @@
   justify-content: space-between;
   align-items: center;
   padding: 0.175rem 2.5rem;
+  padding-right: 0;
+}
+.imageFilterBoxWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  padding: 0 2rem;
+}
+.filterBox {
+  display: flex;
+  gap: 2rem;
 }

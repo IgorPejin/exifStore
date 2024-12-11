@@ -9,10 +9,11 @@ import { GalleryContext } from "../../../context/GalleryContext";
 import { PopUpContext } from "../../../context/PopUpContext";
 
 function ImageList() {
-  const { currentPage, setCurrentPage, loading, totalPages } =
+  const { currentPage, setCurrentPage, loading, totalPages, setRefresh } =
     useContext(GalleryContext);
   const { setType } = useContext(PopUpContext);
   const handleChange = (event, value) => {
+    setRefresh(true);
     setCurrentPage(value);
   };
 
@@ -21,7 +22,7 @@ function ImageList() {
       <div className={styles.imageListWrapper}>
         {loading ? <CircularProgress /> : <MasonryImageList />}
       </div>
-      {!!totalPages && (
+      {
         <div className={styles.imageListActionBox}>
           <Pagination
             count={totalPages}
@@ -42,7 +43,7 @@ function ImageList() {
             <AddCircleIcon color="success" sx={{ fontSize: "4rem" }} />
           </IconButton>
         </div>
-      )}
+      }
     </div>
   );
 }
