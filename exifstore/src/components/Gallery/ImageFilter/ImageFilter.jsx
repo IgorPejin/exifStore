@@ -9,6 +9,11 @@ import { GalleryContext } from "../../../context/GalleryContext";
 import { FilterContext } from "../../../context/FilterContext";
 import ImageFilterBox from "./ImageFilterBox/ImageFilterBox";
 
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+
+dayjs.extend(utc);
+
 function ImageFilter() {
   const { selectedGallery } = useContext(GalleryContext);
   const { updateFilter, filter } = useContext(FilterContext);
@@ -32,6 +37,7 @@ function ImageFilter() {
         <div className={styles.filterBox}>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DesktopDatePicker
+              timezone="UTC"
               sx={{ backgroundColor: "whitesmoke" }}
               value={filter.date}
               onChange={(newValue) => handleChange(newValue)}

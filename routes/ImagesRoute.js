@@ -126,10 +126,12 @@ async function processImages(rows, plimit, currentPage) {
   ///return images.filter((img) => img !== null);
 }
 
-route.get("/imagesForGallery?:query", auth, async (req, res) => {
+route.post("/imagesForGallery?:query", auth, async (req, res) => {
   const id = req.query.id;
   const plimit = req.query.plimit;
   const currentPage = req.query.currentPage;
+
+  const filters = req.body;
 
   if (id != 0) {
     Image.findAll({ raw: true, nest: true, where: { gallery_id: id } })

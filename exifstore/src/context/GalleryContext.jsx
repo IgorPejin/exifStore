@@ -19,18 +19,17 @@ function GalleryProvider({ children }) {
   const [totalPages, setTotalPages] = useState(null);
 
   const { token } = useContext(AuthContext);
-  const { updateFilter } = useContext(FilterContext);
-
-  const [refresh, setRefresh] = useState(false);
+  const { updateFilter, filter, refresh, setRefresh } =
+    useContext(FilterContext);
 
   useEffect(() => {
     async function getImagesForGallery() {
       setLoading(true);
       const id = selectedGallery ? selectedGallery.id : 0;
       const response = await axiosCall(
-        "get",
+        "post",
         `http://localhost:7000/exifstore/imagesForGallery?id=${id}&plimit=${PAGE_LIMIT}&currentPage=${currentPage}`,
-        undefined,
+        filter,
         {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
@@ -47,7 +46,15 @@ function GalleryProvider({ children }) {
       console.log("refreshing images");
       getImagesForGallery();
     }
-  }, [selectedGallery, token, currentPage, imagesForGallery.length, refresh]);
+  }, [
+    selectedGallery,
+    token,
+    currentPage,
+    imagesForGallery.length,
+    refresh,
+    setRefresh,
+    filter,
+  ]);
 
   const setGalleryContext = (gallery) => {
     setRefresh(true);

@@ -1,24 +1,28 @@
 import { createContext, useState } from "react";
-import dayjs from "dayjs";
 
 const FilterContext = createContext();
 
 const INITIAL_FILTER = {
-  date_time: dayjs(null),
+  date_time: "",
 };
 
 function FilterProvider({ children }) {
   const [filter, setFilter] = useState(INITIAL_FILTER);
 
+  const [refresh, setRefresh] = useState(false);
+
   const updateFilter = (property, value) => {
     const updatedFilter = { ...filter };
     updatedFilter[property] = value;
     setFilter(updatedFilter);
+    setRefresh(true);
   };
 
   const value = {
     updateFilter,
     filter,
+    setRefresh,
+    refresh,
   };
   return (
     <FilterContext.Provider value={value}>{children}</FilterContext.Provider>
