@@ -4,6 +4,11 @@
   "description": "Gallery app that displays, stores and searches images using metadata",
   "main": "exifstore.js",
   "scripts": {
+    "db-migrate": "npx sequelize-cli db:migrate",
+    "db-seed-users": "npx sequelize-cli db:seed:all --seeders-path seeders/users",
+    "db-seed-galleries": "npx sequelize-cli db:seed:all --seeders-path seeders/galleries",
+    "db-seed-images": "npx sequelize-cli db:seed:all --seeders-path seeders/images",
+    "db-seed": "npm run db-seed-users && npm run db-seed-galleries && npm run db-seed-images",
     "start": "concurrently \"nodemon exifstore.js\" \"nodemon exifstoreAuth.js\" \"nodemon exifstoreRest.js\"",
     "dev": "nodemon exifstore.js",
     "test": "echo \"Error: no test specified\" && exit 1"

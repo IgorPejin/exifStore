@@ -72,6 +72,7 @@ route.post("/imageUpload?:id", auth, async (req, res) => {
 
     const ev = calculateEV(exifData.FNumber, exifData.ExposureTime);
     const dimensions = sizeOf(image.data);
+    const date = exifData.DateTimeOriginal.toISOString().split("T")[0];
 
     const newImage = {
       image_name: imageName,
@@ -85,7 +86,7 @@ route.post("/imageUpload?:id", auth, async (req, res) => {
       ev: ev,
       flash: exifData.Flash,
       f_number: exifData.FNumber,
-      date_time: exifData.DateTimeOriginal.toISOString(),
+      date_time: date,
       date_time_offset: exifData.OffsetTimeOriginal,
       gallery_id: id,
       user_id: userId,
@@ -102,12 +103,27 @@ route.post("/imageUpload?:id", auth, async (req, res) => {
   }
 });
 
-async function processImages(rows, plimit, currentPage) {
+function filterImages(images, filterParams) {
+  console.log(filterParams);
+  if (!filterParams.filterActivated) {
+    return images;
+  } else {
+    const filterKeys = Object.keys(filterParams).filter(
+      (key) => key !== "filterActivated"
+    );
+
+    return images.filter((image) =>
+      filterKeys.every((key) => image[key] === filterParams[key])
+    );
+  }
+}
+
+async function processImages(rows, plimit, currentPage, filterParams) {
   const start = (currentPage - 1) * plimit;
   const end = start + plimit;
-  const totalPages = Math.ceil(rows.length / plimit);
-
-  const imagePromises = rows.slice(start, end).map(async (record) => {
+  const filteredImages = filterImages(rows, filterParams);
+  const totalPages = Math.ceil(filteredImages.length / plimit);
+  const imagePromises = filteredImages.slice(start, end).map(async (record) => {
     try {
       const buffer = await fs.promises.readFile(`./${record.image_path}`);
       const base64Image = Buffer.from(buffer).toString("base64");
@@ -130,20 +146,29 @@ route.post("/imagesForGallery?:query", auth, async (req, res) => {
   const id = req.query.id;
   const plimit = req.query.plimit;
   const currentPage = req.query.currentPage;
-
-  const filters = req.body;
+  const filterParams = req.body;
 
   if (id != 0) {
     Image.findAll({ raw: true, nest: true, where: { gallery_id: id } })
       .then((rows) =>
-        processImages(rows, parseInt(plimit), parseInt(currentPage))
+        processImages(
+          rows,
+          parseInt(plimit),
+          parseInt(currentPage),
+          filterParams
+        )
       )
       .then((data) => res.json(data))
       .catch((err) => res.status(500).json(err));
   } else {
     Image.findAll({ raw: true, nest: true })
       .then((rows) =>
-        processImages(rows, parseInt(plimit), parseInt(currentPage))
+        processImages(
+          rows,
+          parseInt(plimit),
+          parseInt(currentPage),
+          filterParams
+        )
       )
       .then((data) => res.json(data))
       .catch((err) => res.status(500).json(err));

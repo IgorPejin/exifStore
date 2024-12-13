@@ -3,7 +3,7 @@ import { createContext, useState } from "react";
 const FilterContext = createContext();
 
 const INITIAL_FILTER = {
-  date_time: "",
+  filterActivated: false,
 };
 
 function FilterProvider({ children }) {
@@ -14,8 +14,13 @@ function FilterProvider({ children }) {
   const updateFilter = (property, value) => {
     const updatedFilter = { ...filter };
     updatedFilter[property] = value;
+    updatedFilter.filterActivated = true;
     setFilter(updatedFilter);
     setRefresh(true);
+  };
+
+  const resetFilters = () => {
+    setFilter(INITIAL_FILTER);
   };
 
   const value = {
@@ -23,6 +28,7 @@ function FilterProvider({ children }) {
     filter,
     setRefresh,
     refresh,
+    resetFilters,
   };
   return (
     <FilterContext.Provider value={value}>{children}</FilterContext.Provider>
