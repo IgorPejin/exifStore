@@ -65,14 +65,13 @@ module.exports = {
           model: "Galleries",
           key: "id",
         },
-        onUpdate: "CASCADE",
         onDelete: "CASCADE",
       },
       user_id: {
         type: Sequelize.INTEGER,
         allowNull: true,
         references: {
-          model: "Images",
+          model: "Users",
           key: "id",
         },
         onUpdate: "CASCADE",

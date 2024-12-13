@@ -42,9 +42,11 @@ route.put("/updateGalleryById?:id", auth, (req, res) => {
     });
 });
 
-route.delete("/deleteGalleryById?:id", auth, (req, res) => {
+route.delete("/deleteGalleryById?:id", auth, async (req, res) => {
   const userId = req.user.id;
-  Gallery.destroy({ where: { id: req.query.id } })
+  const galleryId = parseInt(req.query.id);
+
+  Gallery.destroy({ where: { id: galleryId } })
     .then(async (row) => {
       const galleryPath =
         path.join(__dirname, "..") + `/storage/g${userId}/g${req.query.id}`;

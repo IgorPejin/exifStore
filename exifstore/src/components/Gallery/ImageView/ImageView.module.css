@@ -1,0 +1,25 @@
+.imageViewBox {
+  position: relative;
+  flex-grow: 1;
+  display: inline-flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: aliceblue;
+}
+
+.imageBox {
+  width: 800px;
+  height: 800px;
+  object-fit: contain;
+}
+
+.imageInfoWrapper {
+  display: flex;
+  width: 100%;
+  gap: 3rem;
+  padding: 0 5rem;
+}
+
+.imageInfoBox {
+  flex-grow: 1;
+}

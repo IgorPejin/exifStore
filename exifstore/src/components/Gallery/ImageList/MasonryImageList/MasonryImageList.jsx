@@ -7,9 +7,13 @@ import styles from "./MasonryImageList.module.css";
 import { AuthContext } from "../../../../context/AuthContext";
 
 export default function MasonryImageList() {
-  const { imagesForGallery } = useContext(GalleryContext);
+  const { imagesForGallery, setSelectedImage } = useContext(GalleryContext);
   const { username } = useContext(AuthContext);
   const images = [...imagesForGallery];
+
+  function handleClick(image) {
+    setSelectedImage(image);
+  }
 
   return (
     <Box
@@ -20,11 +24,14 @@ export default function MasonryImageList() {
         marginTop: "0.5rem",
       }}
     >
-      <ImageList sx={{ padding: "1rem" }} variant="masonry" cols={3} gap={20}>
+      <ImageList sx={{ padding: "1.5rem" }} variant="masonry" cols={3} gap={25}>
         {images.map((image) => (
-          <ImageListItem key={image.id}>
+          <ImageListItem
+            className={styles.image}
+            onClick={() => handleClick(image)}
+            key={image.id}
+          >
             <img
-              className={styles.image}
               // width="100%"
               // height="100%"
               loading="lazy"

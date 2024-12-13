@@ -8,7 +8,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { GalleryContext } from "../../../context/GalleryContext";
 import { PopUpContext } from "../../../context/PopUpContext";
 
-function ImageList() {
+function ImageList({ show }) {
   const { currentPage, setCurrentPage, loading, totalPages, setRefresh } =
     useContext(GalleryContext);
   const { setType } = useContext(PopUpContext);
@@ -18,7 +18,10 @@ function ImageList() {
   };
 
   return (
-    <div className={styles.imageListBox}>
+    <div
+      style={show ? {} : { display: "none" }}
+      className={styles.imageListBox}
+    >
       <div className={styles.imageListWrapper}>
         {loading ? <CircularProgress /> : <MasonryImageList />}
       </div>

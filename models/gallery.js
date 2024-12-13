@@ -6,9 +6,6 @@ module.exports = (sequelize, DataTypes) => {
       this.belongsTo(User, { foreignKey: "user_id", as: "user" });
       this.hasMany(Image, {
         foreignKey: "gallery_id",
-        as: "image",
-        onDelete: "cascade",
-        hooks: true,
       });
     }
   }

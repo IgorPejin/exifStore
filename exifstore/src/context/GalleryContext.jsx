@@ -14,6 +14,7 @@ function GalleryProvider({ children }) {
 
   //todo: learn the basics of useMemo so that u can save a request if the selected gallery is the same.
   const [imagesForGallery, setImagesForGallery] = useState([]);
+  const [selectedImage, setSelectedImage] = useState(false);
 
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(null);
@@ -121,6 +122,8 @@ function GalleryProvider({ children }) {
     optionsContext,
     resetImageList,
     setRefresh,
+    selectedImage,
+    setSelectedImage,
   };
   return (
     <GalleryContext.Provider value={value}>{children}</GalleryContext.Provider>
