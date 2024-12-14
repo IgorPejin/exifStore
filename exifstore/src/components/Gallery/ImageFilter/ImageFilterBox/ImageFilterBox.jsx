@@ -12,11 +12,12 @@ import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import { useContext, useState } from "react";
 import { FilterContext } from "../../../../context/FilterContext";
+import { floatRegex, integerRegex } from "../../../../utils/regex";
 
 dayjs.extend(utc);
 
 function ImageFilterBox() {
-  const { setRefresh, resetFilters, updateFilter, filter } =
+  const { setRefresh, deleteFilter, resetFilters, updateFilter, filter } =
     useContext(FilterContext);
 
   const [ev, setEv] = useState("");
@@ -25,13 +26,15 @@ function ImageFilterBox() {
   const [fnumber, setFNumber] = useState("");
 
   function handleResetFilters() {
-    setEv(null);
-    setExposureTime(null);
-    setIso(null);
-    setFNumber(null);
+    setEv("");
+    setExposureTime("");
+    setIso("");
+    setFNumber("");
     resetFilters();
     setRefresh(true);
   }
+
+  //todo: abstract handlers
 
   function handleChange(newValue) {
     const date = newValue.$d.toISOString().split("T")[0];
@@ -42,8 +45,15 @@ function ImageFilterBox() {
     const newValue = e.target.value;
     setEv(newValue);
   }
-  function handleBlurEv() {
-    updateFilter("ev", parseFloat(ev));
+  function handleBlurEv(e) {
+    const number = e.target.value;
+    const regexTest = floatRegex.test(number);
+    if (regexTest) {
+      updateFilter("ev", parseFloat(ev));
+    } else {
+      setEv("");
+      deleteFilter("ev");
+    }
   }
 
   function handleChangeExposureTime(e) {
@@ -51,8 +61,15 @@ function ImageFilterBox() {
     setExposureTime(newValue);
   }
 
-  function handleBlurExposureTime() {
-    updateFilter("exposure_time", parseFloat(exposureTime));
+  function handleBlurExposureTime(e) {
+    const number = e.target.value;
+    const regexTest = floatRegex.test(number);
+    if (regexTest) {
+      updateFilter("exposure_time", parseFloat(exposureTime));
+    } else {
+      setExposureTime("");
+      deleteFilter("exposure_time");
+    }
   }
 
   function handleChangeIso(e) {
@@ -60,8 +77,15 @@ function ImageFilterBox() {
     setIso(newValue);
   }
 
-  function handleBlurIso() {
-    updateFilter("iso", parseInt(iso));
+  function handleBlurIso(e) {
+    const number = e.target.value;
+    const regexTest = integerRegex.test(number);
+    if (regexTest) {
+      updateFilter("iso", parseFloat(iso));
+    } else {
+      setIso("");
+      deleteFilter("iso");
+    }
   }
 
   function handleChangeFNumber(e) {
@@ -69,8 +93,15 @@ function ImageFilterBox() {
     setFNumber(newValue);
   }
 
-  function handleBlurFNumber() {
-    updateFilter("f_number", parseFloat(fnumber));
+  function handleBlurFNumber(e) {
+    const number = e.target.value;
+    const regexTest = floatRegex.test(number);
+    if (regexTest) {
+      updateFilter("f_number", parseFloat(fnumber));
+    } else {
+      setFNumber("");
+      deleteFilter("f_number");
+    }
   }
 
   return (
@@ -87,7 +118,7 @@ function ImageFilterBox() {
       <TextField
         id="outlined-number"
         label="EV"
-        type="number"
+        type="text"
         value={ev}
         onBlur={handleBlurEv}
         onChange={handleChangeEv}
@@ -104,7 +135,7 @@ function ImageFilterBox() {
         onBlur={handleBlurExposureTime}
         onChange={handleChangeExposureTime}
         value={exposureTime}
-        type="number"
+        type="text"
         sx={{ width: "100px" }}
         slotProps={{
           inputLabel: {
@@ -118,7 +149,7 @@ function ImageFilterBox() {
         onBlur={handleBlurIso}
         onChange={handleChangeIso}
         value={iso}
-        type="number"
+        type="text"
         sx={{ width: "100px" }}
         slotProps={{
           inputLabel: {
@@ -129,7 +160,7 @@ function ImageFilterBox() {
       <TextField
         id="outlined-number"
         label="F number"
-        type="number"
+        type="text"
         onBlur={handleBlurFNumber}
         onChange={handleChangeFNumber}
         value={fnumber}

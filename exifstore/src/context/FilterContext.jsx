@@ -1,10 +1,7 @@
 import { createContext, useState } from "react";
+import { INITIAL_FILTER } from "../utils/properties";
 
 const FilterContext = createContext();
-
-const INITIAL_FILTER = {
-  filterActivated: false,
-};
 
 function FilterProvider({ children }) {
   const [filter, setFilter] = useState(INITIAL_FILTER);
@@ -19,7 +16,17 @@ function FilterProvider({ children }) {
     setRefresh(true);
   };
 
+  const deleteFilter = (property) => {
+    const updatedFilter = { ...filter };
+    if (updatedFilter[property]) {
+      delete updatedFilter[property];
+      setFilter(updatedFilter);
+      setRefresh(true);
+    }
+  };
+
   const resetFilters = () => {
+    //todo: clear filters when gallery switched
     setFilter(INITIAL_FILTER);
   };
 
@@ -29,6 +36,7 @@ function FilterProvider({ children }) {
     setRefresh,
     refresh,
     resetFilters,
+    deleteFilter,
   };
   return (
     <FilterContext.Provider value={value}>{children}</FilterContext.Provider>

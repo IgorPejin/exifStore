@@ -60,9 +60,6 @@ function GalleryProvider({ children }) {
   const setGalleryContext = (gallery) => {
     setRefresh(true);
     setCurrentPage(1);
-    if (!gallery) {
-      setImagesForGallery([]);
-    } //again, memoized value would be key here
     resetFilters();
     setSelectedGallery(gallery);
   };
