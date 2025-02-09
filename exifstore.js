@@ -22,5 +22,6 @@ exifStoreApp.listen({ port: process.env.EXIF_APP_PORT }, () => {
     //   ],
     // });
     // console.log(exifData);
+    //testing commit
   })();
 });
