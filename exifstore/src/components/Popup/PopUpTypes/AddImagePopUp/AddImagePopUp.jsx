@@ -3,23 +3,10 @@ import { useContext, useEffect, useState } from "react";
 import UndoIcon from "@mui/icons-material/Undo";
 import { PopUpContext } from "../../../../context/PopUpContext";
 import styles from "./AddImagePopUp.module.css";
-import CloudUploadIcon from "@mui/icons-material/CloudUpload";
-import { styled } from "@mui/material/styles";
 import axiosCall from "../../../../utils/axiosCall";
 import { AuthContext } from "../../../../context/AuthContext";
 import { GalleryContext } from "../../../../context/GalleryContext";
-
-const VisuallyHiddenInput = styled("input")({
-  clip: "rect(0 0 0 0)",
-  clipPath: "inset(50%)",
-  height: 1,
-  overflow: "hidden",
-  position: "absolute",
-  bottom: 0,
-  left: 0,
-  whiteSpace: "nowrap",
-  width: 1,
-});
+import AutocompleteAsync from "../../../Sidebar/SidebarActions/AutocompleteAsync/AutocompleteAsync";
 
 function AddImagePopUp({ boxStyle }) {
   const { setType } = useContext(PopUpContext);
@@ -88,13 +75,8 @@ function AddImagePopUp({ boxStyle }) {
     }
   }
 
-  function handleAddImage(e) {
-    // clear image name of extensions : todo
-    setImage(e.target.files[0]); // one image for now
-  }
-
   return (
-    <div className={boxStyle}>
+    <div style={{ height: "800px" }} className={boxStyle}>
       <div className={styles.addImageBox}>
         <IconButton
           onClick={handleBackButton}
@@ -109,38 +91,25 @@ function AddImagePopUp({ boxStyle }) {
         >
           <UndoIcon />
         </IconButton>
+        <h2></h2>
         <div className={styles.addImageWrapper}>
           <form
             encType="multipart/form-data"
             className={styles.addImageForm}
             onSubmit={handleSubmit}
           >
-            <Button
-              component="label"
-              sx={{ backgroundColor: "whitesmoke", color: "#55b" }}
-              className={styles.addButton}
-              variant="contained"
-              role={undefined}
-              tabIndex={-1}
-              startIcon={<CloudUploadIcon />}
-            >
-              Choose image
-              <VisuallyHiddenInput
-                type="file"
-                onChange={handleAddImage}
-                // multiple : todo
-              />
-            </Button>
-            <Button
-              color="success"
-              className={styles.editButton}
-              variant="contained"
-              type="submit"
-            >
-              Upload image
-            </Button>
+            {/* todo: MAKE A BUTTON AND DEFINE DROP ZONE */}
           </form>
-          <img id="imageThumbnail" className={styles.imageThumbnail} src="" />
+          <div className={styles.addImageFormRow}>
+            <label style={{ color: "#222", fontSize: "0.9rem" }} htmlFor="auto">
+              Optional
+            </label>
+            <AutocompleteAsync id="auto" newGalleryOption="false" />
+            <br></br>
+            <Button color="success" variant="contained" type="submit">
+              Upload photos
+            </Button>
+          </div>
         </div>
       </div>
     </div>

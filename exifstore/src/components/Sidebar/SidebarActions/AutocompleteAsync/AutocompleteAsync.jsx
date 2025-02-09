@@ -21,7 +21,7 @@ function sleep(duration) {
   });
 }
 
-export default function AutocompleteAsync() {
+export default function AutocompleteAsync({ newGalleryOption }) {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const { setType } = useContext(PopUpContext);
@@ -53,8 +53,8 @@ export default function AutocompleteAsync() {
       setOptionsContext(galleryNames);
       setLoading(false);
     }
-    getGalleriesForUser();
-  }, [token, setOptionsContext]);
+    if (!optionsContext.length) getGalleriesForUser();
+  }, [token, setOptionsContext, optionsContext.length]);
 
   const handleOpen = () => {
     setOpen(true);
@@ -70,22 +70,26 @@ export default function AutocompleteAsync() {
 
   return (
     <div className={styles.autocompleteBox}>
-      <div
-        style={
-          selectedGallery ? { visibility: "visible" } : { visibility: "hidden" }
-        }
-        className={styles.autocompleteActions}
-      >
-        <IconButton onClick={() => setType("edit_gallery")} aria-label="edit">
-          <EditIcon sx={{ color: "#55B" }} />
-        </IconButton>
-        <IconButton
-          onClick={() => setType("delete_gallery")}
-          aria-label="delete"
+      {newGalleryOption === "false" || (
+        <div
+          style={
+            selectedGallery
+              ? { visibility: "visible" }
+              : { visibility: "hidden" }
+          }
+          className={styles.autocompleteActions}
         >
-          <DeleteForeverIcon sx={{ color: "#55B" }} />
-        </IconButton>
-      </div>
+          <IconButton onClick={() => setType("edit_gallery")} aria-label="edit">
+            <EditIcon sx={{ color: "#55B" }} />
+          </IconButton>
+          <IconButton
+            onClick={() => setType("delete_gallery")}
+            aria-label="delete"
+          >
+            <DeleteForeverIcon sx={{ color: "#55B" }} />
+          </IconButton>
+        </div>
+      )}
       <Autocomplete
         sx={{ margin: "1rem 0" }}
         open={open}
@@ -125,10 +129,12 @@ export default function AutocompleteAsync() {
           justifyContent: "center",
         }}
       >
-        <IconButton onClick={() => setType("add_gallery")} aria-label="add">
-          <span className={styles.addAction}>Add new gallery </span>
-          <AddCircleIcon sx={{ color: "#55B" }} />
-        </IconButton>
+        {newGalleryOption === "true" && (
+          <IconButton onClick={() => setType("add_gallery")} aria-label="add">
+            <span className={styles.addAction}>Add new gallery </span>
+            <AddCircleIcon sx={{ color: "#55B" }} />
+          </IconButton>
+        )}
       </div>
     </div>
   );

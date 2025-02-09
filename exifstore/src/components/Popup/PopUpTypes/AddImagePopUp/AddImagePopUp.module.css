@@ -6,6 +6,7 @@
 
 .addImageWrapper {
   display: flex;
+  flex-direction: column;
   justify-content: space-around;
   align-items: center;
   width: 100%;
@@ -17,23 +18,13 @@
   flex-direction: column;
   justify-content: space-evenly;
   height: 100%;
+  width: 100%;
+  margin: 3rem 1rem;
+  margin-bottom: 0;
+  border: 2px dashed whitesmoke;
 }
-
-.imageThumbnail {
-  width: 200px;
-  height: 200px;
-  object-fit: cover;
-}
-.addButton {
-  background-color: whitesmoke;
-  color: #55b;
-  transition: all 0.2s ease-in;
-}
-.addButtonFilled {
-  background-color: coral;
-  color: whitesmoke;
-}
-.addButton:hover {
-  background-color: #55d;
-  color: whitesmoke;
+.addImageFormRow {
+  justify-content: space-around;
+  margin: 1rem;
+  width: 100%;
 }
