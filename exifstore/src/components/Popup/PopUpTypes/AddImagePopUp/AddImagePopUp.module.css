@@ -6,11 +6,10 @@
 
 .addImageWrapper {
   display: flex;
-  flex-direction: column;
   justify-content: space-around;
   align-items: center;
-  width: 100%;
-  padding: 2.5rem;
+  height: 95%;
+  padding: 1rem 3rem;
 }
 
 .addImageForm {
@@ -26,5 +25,4 @@
 .addImageFormRow {
   justify-content: space-around;
   margin: 1rem;
-  width: 100%;
 }
