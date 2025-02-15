@@ -10,6 +10,13 @@ function ImageView({ show }) {
   function handleBackButton() {
     setSelectedImage(null);
   }
+
+  function handleClick() {
+    // const image = e.target;
+    // const src = image.src;
+    // window.open(src, "_blank");
+  }
+
   return (
     <div
       style={show ? {} : { display: "none" }}
@@ -32,6 +39,7 @@ function ImageView({ show }) {
         {selectedImage && (
           <>
             <img
+              onClick={handleClick}
               className={styles.imageBox}
               loading="lazy"
               src={`data:image/jpeg;base64,${selectedImage.image_buffer}`}

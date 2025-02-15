@@ -60,6 +60,28 @@ function Login() {
     <div className={styles.loginBox}>
       <div className={styles.loginBoxWrapper}>
         <div className={styles.formBox}>
+          <div className={styles.loginTextBox}>
+            <h2>
+              {register ? "Welcome to exifstore app" : `Don't have an account?`}
+            </h2>
+
+            {register ? (
+              <h3>The place to store all your images</h3>
+            ) : (
+              <Button
+                onClick={handleRegister}
+                sx={{
+                  color: "aliceblue",
+                  padding: "0",
+                  paddingLeft: "0.1rem",
+                  marginTop: "0.5rem",
+                }}
+                className={styles.registerText}
+              >
+                Register here!
+              </Button>
+            )}
+          </div>
           <form
             action={register ? "register" : "login"}
             method="post"
@@ -172,36 +194,10 @@ function Login() {
                 "& .MuiInputLabel-root": { color: "whitesmoke" },
               }}
             />
-            <Button
-              type="submit"
-              variant="contained"
-              size="large"
-              sx={{
-                backgroundColor: "whitesmoke",
-                color: "#55b",
-                marginTop: "2rem",
-              }}
-            >
+            <button onClick={handleSubmit} className={styles.loginButton}>
               {register ? "Register" : "Log in"}
-            </Button>
+            </button>
           </form>
-        </div>
-        <div className={styles.loginTextBox}>
-          <h1>
-            {register ? "Welcome to exifstore app" : `Don't have an account?`}
-          </h1>
-
-          {register ? (
-            <h3>The place to store all your images</h3>
-          ) : (
-            <Button
-              onClick={handleRegister}
-              sx={{ color: "#222" }}
-              className={styles.registerText}
-            >
-              Register here!
-            </Button>
-          )}
         </div>
       </div>
     </div>

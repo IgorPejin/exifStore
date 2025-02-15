@@ -4,7 +4,7 @@ import axiosCall from "../utils/axiosCall";
 import { FilterContext } from "./FilterContext";
 
 const GalleryContext = createContext();
-const PAGE_LIMIT = 10; // 50 would be ideal
+const PAGE_LIMIT = 3; // 50 would be ideal
 
 function GalleryProvider({ children }) {
   const [selectedGallery, setSelectedGallery] = useState(null);
@@ -12,7 +12,7 @@ function GalleryProvider({ children }) {
 
   const [loading, setLoading] = useState(false);
 
-  //todo: learn the basics of useMemo so that u can save a request if the selected gallery is the same.
+  //todo: learn the basics of useMemo so that u can save a request if the selected gallery is the same, or implement history context
   const [imagesForGallery, setImagesForGallery] = useState([]);
   const [selectedImage, setSelectedImage] = useState(false);
 
@@ -20,8 +20,10 @@ function GalleryProvider({ children }) {
   const [totalPages, setTotalPages] = useState(null);
 
   const { token } = useContext(AuthContext);
-  const { resetFilters, filter, refresh, setRefresh } =
-    useContext(FilterContext);
+
+  //todo: remove setRefresh entirely
+
+  const { filter, refresh, setRefresh } = useContext(FilterContext);
 
   useEffect(() => {
     async function getImagesForGallery() {
@@ -36,6 +38,7 @@ function GalleryProvider({ children }) {
           Authorization: `Bearer ${token}`,
         }
       );
+      console.log(response);
       const images = response.data.images;
       const totalPages = response.data.count;
       setTotalPages(totalPages);
@@ -45,6 +48,7 @@ function GalleryProvider({ children }) {
     }
     if (imagesForGallery.length == 0 || refresh) {
       console.log("refreshing images");
+      console.log(filter);
       getImagesForGallery();
     }
   }, [
@@ -60,7 +64,6 @@ function GalleryProvider({ children }) {
   const setGalleryContext = (gallery) => {
     setRefresh(true);
     setCurrentPage(1);
-    resetFilters();
     setSelectedGallery(gallery);
   };
 
@@ -87,7 +90,6 @@ function GalleryProvider({ children }) {
   };
 
   const deleteOption = (galleryToDelete) => {
-    console.log(galleryToDelete.id, optionsContext);
     const newOptions = optionsContext.filter(
       (gallery) => gallery.id !== galleryToDelete.id
     );

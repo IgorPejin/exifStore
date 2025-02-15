@@ -30,78 +30,79 @@ function auth(req, res, next) {
   });
 }
 
-route.post("/imageUpload", auth, async (req, res) => {
-  console.log("hi");
-  console.log(req.files);
-  res.status(200).json({});
-  // let id = parseInt(req.query.id);
-  // const userId = req.user.id;
-  // const files = req.files;
-  // const image = files.image;
-  // const imageName = image.name;
-  // const confirm = req.body.confirm;
-  // let filePath;
-  // let storagePath;
-  // try {
-  //   if (confirm && id === 0) {
-  //     storagePath = `storage/g${userId}/${imageName}`;
-  //     filePath = path.join(__dirname, "..") + "/" + storagePath;
-  //     id = null;
-  //   } else {
-  //     storagePath = `storage/g${userId}/g${id}/${imageName}`;
-  //     filePath = path.join(__dirname, "..") + "/" + storagePath;
-  //   }
-  //   await fs.promises.appendFile(filePath, image.data);
-  //   const buffer = await fs.promises.readFile(filePath);
-  //   const base64Image = Buffer.from(buffer).toString("base64");
-  //   const exifData = await exifr.parse(filePath, {
-  //     pick: [
-  //       "Make",
-  //       "Model",
-  //       "ISO",
-  //       "ExposureTime",
-  //       "Flash",
-  //       "FNumber",
-  //       "DateTimeOriginal",
-  //       "OffsetTimeOriginal",
-  //       "ShutterSpeedValue",
-  //       "ApertureValue",
-  //     ],
-  //   });
-  //   const ev = calculateEV(exifData.FNumber, exifData.ExposureTime);
-  //   const dimensions = sizeOf(image.data);
-  //   const date = exifData.DateTimeOriginal.toISOString().split("T")[0];
-  //   const newImage = {
-  //     image_name: imageName,
-  //     image_width: dimensions.width,
-  //     image_height: dimensions.height,
-  //     image_path: storagePath,
-  //     make: exifData.Make,
-  //     model: exifData.Model,
-  //     iso: exifData.ISO,
-  //     exposure_time: exifData.ExposureTime,
-  //     ev: ev,
-  //     flash: exifData.Flash,
-  //     f_number: exifData.FNumber,
-  //     date_time: date,
-  //     date_time_offset: exifData.OffsetTimeOriginal,
-  //     gallery_id: id,
-  //     user_id: userId,
-  //   };
-  //   Image.create(newImage)
-  //     .then((row) => {
-  //       res.json({ ...row.dataValues, image_buffer: base64Image });
-  //     })
-  //     .catch((err) => {
-  //       res.status(500).json(err);
-  //     });
-  // } catch (error) {
-  //   console.error(`Error while writing file: ${filePath}`, error);
-  // }
+route.post("/imageUpload?:selectedGalleryId", auth, async (req, res) => {
+  let id = parseInt(req.query.selectedGalleryId);
+  const userId = req.user.id;
+  const files = req.files;
+  const image = files.file;
+  console.log(image);
+
+  //todo: TO FIX CRASHES PARSE THE PATH SO THAT U COVER ALL CASES
+  // or check if the image already exists and make a copy
+  const imageName = image.name;
+  let filePath;
+  let storagePath;
+  try {
+    if (id === 0) {
+      storagePath = `storage/g${userId}/${imageName}`;
+      filePath = path.join(__dirname, "..") + "/" + storagePath;
+      id = null;
+    } else {
+      storagePath = `storage/g${userId}/g${id}/${imageName}`;
+      filePath = path.join(__dirname, "..") + "/" + storagePath;
+    }
+    await fs.promises.appendFile(filePath, image.data);
+    const buffer = await fs.promises.readFile(filePath);
+    const base64Image = Buffer.from(buffer).toString("base64");
+    const exifData = await exifr.parse(filePath, {
+      pick: [
+        "Make",
+        "Model",
+        "ISO",
+        "ExposureTime",
+        "Flash",
+        "FNumber",
+        "DateTimeOriginal",
+        "OffsetTimeOriginal",
+        "ShutterSpeedValue",
+        "ApertureValue",
+      ],
+    });
+    const ev = calculateEV(exifData.FNumber, exifData.ExposureTime);
+    const dimensions = sizeOf(image.data);
+    const date = exifData.DateTimeOriginal.toISOString().split("T")[0];
+    const newImage = {
+      image_name: imageName,
+      image_width: dimensions.width,
+      image_height: dimensions.height,
+      image_path: storagePath,
+      make: exifData.Make,
+      model: exifData.Model,
+      iso: exifData.ISO,
+      exposure_time: exifData.ExposureTime,
+      ev: ev,
+      flash: exifData.Flash,
+      f_number: exifData.FNumber,
+      date_time: date,
+      date_time_offset: exifData.OffsetTimeOriginal,
+      gallery_id: id,
+      user_id: userId,
+    };
+    Image.create(newImage)
+      .then((row) => {
+        res.json({ ...row.dataValues, image_buffer: base64Image });
+      })
+      .catch((err) => {
+        res.status(500).json(err);
+      });
+  } catch (error) {
+    console.error(`Error while writing file: ${filePath}`, error);
+  }
 });
 
 function filterImages(images, filterParams) {
   console.log(filterParams);
+  console.log(images);
   if (!filterParams.filterActivated) {
     return images;
   } else {
@@ -135,6 +136,7 @@ async function processImages(rows, plimit, currentPage, filterParams) {
   });
 
   const images = await Promise.all(imagePromises);
+  console.log(images + "PROMISI");
   return { count: totalPages, images: images.reverse() }; // lifo
   ///return images.filter((img) => img !== null);
 }

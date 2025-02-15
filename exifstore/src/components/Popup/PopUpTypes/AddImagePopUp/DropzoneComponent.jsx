@@ -1,4 +1,4 @@
-import { useRef, useEffect, useContext } from "react";
+import { useRef, useEffect, useContext, useState } from "react";
 import Dropzone from "dropzone";
 import "dropzone/dist/dropzone.css"; // Import Dropzone styles
 import { AuthContext } from "../../../../context/AuthContext";
@@ -8,12 +8,18 @@ import styles from "./AddImagePopUp.module.css";
 import UndoIcon from "@mui/icons-material/Undo";
 import { IconButton } from "@mui/material";
 import { PopUpContext } from "../../../../context/PopUpContext";
+import { GalleryContext } from "../../../../context/GalleryContext";
+import { FilterContext } from "../../../../context/FilterContext";
 
 const DropzoneComponent = () => {
   const dropzoneRef = useRef(null);
   const dropzoneInstance = useRef(null);
   const { token } = useContext(AuthContext);
   const { setType } = useContext(PopUpContext);
+  const { selectedGallery } = useContext(GalleryContext);
+  const [isUploadEnabled, setIsUploadEnabled] = useState(false);
+  const selectedGalleryId = selectedGallery ? selectedGallery.id : 0;
+  const { setRefresh } = useContext(FilterContext);
 
   const generateThumbnail = (file) => {
     const reader = new FileReader();
@@ -33,7 +39,7 @@ const DropzoneComponent = () => {
   useEffect(() => {
     if (dropzoneRef.current && !Dropzone.instances.length) {
       dropzoneInstance.current = new Dropzone(dropzoneRef.current, {
-        url: "http://localhost:7000/exifstore/imageUpload",
+        url: `http://localhost:7000/exifstore/imageUpload/?selectedGalleryId=${selectedGalleryId}`,
         method: "post",
         paramName: "file",
         maxFilesize: 100,
@@ -45,9 +51,10 @@ const DropzoneComponent = () => {
           Authorization: `Bearer ${token}`,
         },
         clickable: true,
-        thumbnailWidth: 150,
-        thumbnailHeight: 150,
-        maxFiles: 10,
+        thumbnailWidth: 350,
+        thumbnailHeight: 350,
+        maxFiles: 50,
+        parallelUploads: 10,
       });
 
       dropzoneInstance.current.on("addedfile", (file) => {
@@ -58,6 +65,7 @@ const DropzoneComponent = () => {
           // For non-image files, show the default file icon or handle them as you see fit, but still dont accept them
           file.previewElement.classList.add("dz-file-preview");
         }
+        setIsUploadEnabled(dropzoneInstance.current.files.length > 0);
       });
       dropzoneInstance.current.on("processing", (file) => {
         console.log("Processing: ", file.name);
@@ -67,23 +75,58 @@ const DropzoneComponent = () => {
         console.log("File uploaded successfully: ", file.name);
       });
 
+      dropzoneInstance.current.on("queuecomplete", () => {
+        setTimeout(() => {
+          console.log("All files finished uploading! (Delayed by 2 seconds)");
+          dropzoneInstance.current.removeAllFiles(true); // Cancel uploads and clear files
+        }, 3000); // 2000ms = 2 seconds
+      });
+
+      dropzoneInstance.current.on("removedfile", (file) => {
+        console.log("Removed file: " + file.name);
+        setIsUploadEnabled(dropzoneInstance.current.files.length > 0);
+      });
+
       dropzoneInstance.current.on("error", (file) => {
         if (file.size > this.options.maxFilesize * 1024 * 1024) {
           console.log("File size error");
         }
       });
     }
-  }, [token, dropzoneInstance]);
+  }, [token, dropzoneInstance, selectedGalleryId, setRefresh]);
+
+  function triggerUploadSequence(confirmStatus) {
+    if (!dropzoneInstance.current) return;
+
+    function processBatch() {
+      if (
+        confirmStatus &&
+        dropzoneInstance.current.getQueuedFiles().length > 0
+      ) {
+        dropzoneInstance.current.processQueue();
+        setTimeout(() => {
+          processBatch(); // Recursively call processBatch to handle the next batch
+        }, 3000); // Adjust delay as needed (e.g., 3 seconds)
+      }
+    }
+
+    processBatch();
+  }
 
   function handleUpload() {
-    if (dropzoneInstance.current) {
-      const queuedFiles = dropzoneInstance.current.getQueuedFiles();
-
-      // Loop over the queued files and upload each one
-      queuedFiles.forEach((file) => {
-        dropzoneInstance.current.processFile(file);
-      });
+    let confirmStatus = true;
+    if (selectedGalleryId == 0) {
+      if (
+        confirm(
+          "You have not sellected a gallery. Do you wish to add the image without a gallery?"
+        ) === true
+      ) {
+        confirmStatus = true;
+      } else {
+        confirmStatus = false;
+      }
     }
+    triggerUploadSequence(confirmStatus);
   }
   function handleBackButton() {
     if (dropzoneInstance.current) {
@@ -93,6 +136,7 @@ const DropzoneComponent = () => {
       dropzoneInstance.current = null; // Reset reference
     }
     setType(null);
+    setRefresh(true);
   }
 
   return (
@@ -121,6 +165,7 @@ const DropzoneComponent = () => {
         <AutocompleteAsync id="auto" newGalleryOption="false" />
         <br></br>
         <Button
+          disabled={isUploadEnabled ? false : true}
           onClick={handleUpload}
           color="success"
           variant="contained"

@@ -17,7 +17,13 @@ function ImageFilter() {
 
   return (
     <div className={styles.imageFilterWrapper}>
-      <h1 style={{ fontWeight: 400 }}>
+      <h1
+        style={
+          selectedGallery
+            ? { fontWeight: 400, visibility: "visible" }
+            : { visibility: "hidden" }
+        }
+      >
         {selectedGallery ? selectedGallery.name : "Choose gallery"}
       </h1>
       <div className={styles.imageFilterBoxWrapper}>
