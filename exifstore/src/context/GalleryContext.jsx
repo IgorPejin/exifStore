@@ -4,7 +4,7 @@ import axiosCall from "../utils/axiosCall";
 import { FilterContext } from "./FilterContext";
 
 const GalleryContext = createContext();
-const PAGE_LIMIT = 3; // 50 would be ideal
+const PAGE_LIMIT = 10; // 50 would be ideal
 
 function GalleryProvider({ children }) {
   const [selectedGallery, setSelectedGallery] = useState(null);

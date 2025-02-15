@@ -4,6 +4,7 @@ import { useContext, useState } from "react";
 import UndoIcon from "@mui/icons-material/Undo";
 import { AuthContext } from "../../context/AuthContext";
 import axiosCall from "../../utils/axiosCall";
+import { useNavigate } from "react-router-dom";
 
 function Login() {
   const [register, setRegister] = useState(false);
@@ -12,12 +13,17 @@ function Login() {
   const [email, setEmail] = useState("");
 
   const { login } = useContext(AuthContext);
+  const navigation = useNavigate();
 
   function handleRegister() {
     setRegister(!register);
     setUsername("");
     setEmail("");
     setPassword("");
+  }
+
+  function handleExifStoreClick() {
+    navigation("/");
   }
 
   async function handleSubmit(e) {
@@ -58,6 +64,9 @@ function Login() {
 
   return (
     <div className={styles.loginBox}>
+      <h1 className={styles.heroHeading1} onClick={handleExifStoreClick}>
+        ExifStore{" "}
+      </h1>
       <div className={styles.loginBoxWrapper}>
         <div className={styles.formBox}>
           <div className={styles.loginTextBox}>
@@ -66,7 +75,9 @@ function Login() {
             </h2>
 
             {register ? (
-              <h3>The place to store all your images</h3>
+              <h4>
+                <br></br>Please fill out the info
+              </h4>
             ) : (
               <Button
                 onClick={handleRegister}
@@ -132,7 +143,6 @@ function Login() {
                 "& .MuiInputLabel-root": { color: "whitesmoke" },
               }}
             />
-            &nbsp;
             {register && (
               <TextField
                 value={email}
@@ -164,7 +174,7 @@ function Login() {
                 }}
               />
             )}
-            &nbsp;
+
             <TextField
               value={password}
               onChange={(e) => setPassword(e.target.value)}

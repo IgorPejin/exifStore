@@ -11,12 +11,12 @@ function Hero() {
   return (
     <div className={styles.hero}>
       <div className={styles.textContainer}>
-        <h1 className={styles.heroHeading1}>exifStore app</h1>
-        <h2 className={styles.heroHeading2}>share, store & explore!</h2>
+        <h1 className={styles.heroHeading1}>ExifStore </h1>
+        <h2 className={styles.heroHeading2}>Share, store & explore!</h2>
         <ul className={styles.heroList}>
           <li className={styles.listItem}>Store your images in galleries!</li>
           <li className={styles.listItem}>
-            Filter them by date, ISO, flash and more!
+            Filter them by date, ISO, EV and more!
           </li>
           <li className={styles.listItem}>
             Share galleries with others and explore more great photos!

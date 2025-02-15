@@ -2,8 +2,33 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-direction: column;
   height: 100vh;
   background: linear-gradient(135deg, #55b, aliceblue);
+}
+
+.heroHeading1 {
+  font-size: 4rem;
+  color: aliceblue;
+  cursor: pointer;
+  margin-bottom: 2rem;
+  animation: slideDown 1s ease-in-out;
+  transition: all 0.5s;
+}
+.heroHeading1:hover {
+  transform: scale(1.2);
+  color: #55b;
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
 .loginBoxWrapper {
@@ -21,8 +46,10 @@
 }
 
 .loginTextBox {
-  margin: 3rem 0;
-  text-align: left;
+  margin: 1.5rem 0;
+  margin-top: 0;
+
+  text-align: center;
   color: aliceblue;
 }
 
@@ -60,7 +87,7 @@
 }
 
 .loginButton {
-  margin-top: 20px;
+  margin-top: 40px;
   padding: 12px 24px;
   font-size: 1.2rem;
   color: white;

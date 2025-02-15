@@ -114,6 +114,7 @@ const DropzoneComponent = () => {
   }
 
   function handleUpload() {
+    dropzoneInstance.current.options.url = `http://localhost:7000/exifstore/imageUpload/?selectedGalleryId=${selectedGalleryId}`; // set url again in case selected gallery
     let confirmStatus = true;
     if (selectedGalleryId == 0) {
       if (

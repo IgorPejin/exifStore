@@ -37,7 +37,7 @@
 
 .listItem {
   font-size: 1.5rem;
-  margin: 10px 0;
+  margin: 15px 0;
   opacity: 0;
   animation: fadeIn 1.2s ease-in-out forwards;
 }
@@ -63,7 +63,7 @@
 }
 
 .heroButton {
-  margin-top: 20px;
+  margin-top: 50px;
   padding: 12px 24px;
   font-size: 1.2rem;
   color: white;
