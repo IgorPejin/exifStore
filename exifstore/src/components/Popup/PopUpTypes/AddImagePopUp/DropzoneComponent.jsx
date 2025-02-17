@@ -10,6 +10,7 @@ import { IconButton } from "@mui/material";
 import { PopUpContext } from "../../../../context/PopUpContext";
 import { GalleryContext } from "../../../../context/GalleryContext";
 import { FilterContext } from "../../../../context/FilterContext";
+import exifr from "exifr";
 
 const DropzoneComponent = () => {
   const dropzoneRef = useRef(null);
@@ -22,18 +23,10 @@ const DropzoneComponent = () => {
   const { setRefresh } = useContext(FilterContext);
 
   const generateThumbnail = (file) => {
-    const reader = new FileReader();
-
-    // On load, set the image as the thumbnail
-    reader.onload = function (e) {
-      const thumbnailElement =
-        file.previewElement.querySelector(".dz-image img");
-      if (thumbnailElement) {
-        thumbnailElement.src = e.target.result; // Set the image preview
-      }
-    };
-
-    reader.readAsDataURL(file);
+    const thumbnailElement = file.previewElement.querySelector(".dz-image img");
+    if (thumbnailElement) {
+      thumbnailElement.src = exifr.thumbnailUrl(file); // Set the image preview if no thumbnail
+    }
   };
 
   useEffect(() => {
@@ -53,7 +46,7 @@ const DropzoneComponent = () => {
         clickable: true,
         thumbnailWidth: 350,
         thumbnailHeight: 350,
-        maxFiles: 50,
+        maxFiles: 100,
         parallelUploads: 10,
       });
 

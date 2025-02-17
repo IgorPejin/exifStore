@@ -1,30 +1,68 @@
 import Box from "@mui/material/Box";
 import ImageList from "@mui/material/ImageList";
 import { GalleryContext } from "../../../../context/GalleryContext";
-import { useContext, useState } from "react";
-import { IconButton, ImageListItem, ImageListItemBar } from "@mui/material";
+import { useContext, useEffect, useState } from "react";
+import {
+  IconButton,
+  ImageListItem,
+  ImageListItemBar,
+  Tooltip,
+} from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import styles from "./MasonryImageList.module.css";
 import { AuthContext } from "../../../../context/AuthContext";
+import axiosCall from "../../../../utils/axiosCall";
+import { FilterContext } from "../../../../context/FilterContext";
+import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 
 export default function MasonryImageList() {
-  const { imagesForGallery, setSelectedImage } = useContext(GalleryContext);
+  const { imagesForGallery, setSelectedImage, selectedGallery } =
+    useContext(GalleryContext);
+  const { setRefresh } = useContext(FilterContext);
   const { username } = useContext(AuthContext);
   const images = [...imagesForGallery];
   const [hoveredIndex, setHoveredIndex] = useState(null);
+  const { token } = useContext(AuthContext);
+
+  const [loadedCount, setLoadedCount] = useState(0);
+  const [allLoaded, setAllLoaded] = useState(false);
+  const [shouldFadeIn, setShouldFadeIn] = useState(false); // Controls fade-in animation
+
+  useEffect(() => {
+    if (loadedCount === images.length && images.length > 0) {
+      setAllLoaded(true);
+      setTimeout(() => setShouldFadeIn(true), 10); // Start fade-in after a tiny delay
+    }
+  }, [loadedCount, images.length]);
 
   function handleClick(image) {
     setSelectedImage(image);
   }
 
-  function handleDelete(image) {
+  function handleAddToGallery(image) {
+    console.log(image);
+  }
+
+  async function handleDelete(image) {
     console.log(image);
     if (
       confirm(
         "Are you sure you want to delete image " + image.image_name + "?"
       ) === true
     ) {
-      console.log("true");
+      const response = await axiosCall(
+        "delete",
+        `http://localhost:7000/exifstore/imageDelete?id=${image.id}&name=${image.image_name}`,
+        { selectedGallery: selectedGallery },
+        {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        }
+      );
+      if (response.status === 200) {
+        setRefresh(true); // todo: this will be removed when history component gets added
+      }
+      console.log(response);
     }
   }
 
@@ -37,7 +75,17 @@ export default function MasonryImageList() {
         marginTop: "0.5rem",
       }}
     >
-      <ImageList sx={{ padding: "1.5rem" }} variant="masonry" cols={3} gap={25}>
+      <ImageList
+        sx={{
+          padding: "1.5rem",
+          pointerEvents: allLoaded ? "auto" : "none",
+          opacity: shouldFadeIn ? 1 : 0, // Always starts from 0
+          transition: shouldFadeIn ? "opacity 0.5s ease-in" : "none",
+        }}
+        variant="masonry"
+        cols={6}
+        gap={25}
+      >
         {images.map((image, index) => (
           <ImageListItem
             className={styles.image}
@@ -49,27 +97,46 @@ export default function MasonryImageList() {
             <img
               // width="100%"
               // height="100%"
+              onLoad={() => setLoadedCount((count) => count + 1)}
               onClick={() => handleClick(image)}
-              loading="lazy"
-              src={`data:image/jpeg;base64,${image.image_buffer}`}
+              src={`data:image/jpeg;base64,${image.image_thumbnail}`}
             />
             <ImageListItemBar
               title={image.image_name}
               subtitle={"@  " + username}
               sx={{
+                "& .MuiImageListItemBar-title": { fontSize: "0.8rem" },
+                padding: "0",
                 opacity: hoveredIndex === index ? 1 : 0,
                 transition: "opacity 0.3s",
               }}
               actionIcon={
-                <IconButton
-                  onClick={() => handleDelete(image)}
-                  sx={{
-                    color: "rgba(255, 255, 255, 0.54)",
-                    "&:hover": { color: "coral", transform: "scale(1.2)" },
-                  }}
-                >
-                  <DeleteIcon />
-                </IconButton>
+                <>
+                  <Tooltip title="Add to gallery" placement="top" arrow>
+                    <IconButton
+                      onClick={() => handleAddToGallery(image)}
+                      size="small"
+                      sx={{
+                        color: "rgba(255, 255, 255, 0.54)",
+                        "&:hover": { color: "#55b", transform: "scale(1.2)" },
+                      }}
+                    >
+                      <AddPhotoAlternateIcon />
+                    </IconButton>
+                  </Tooltip>
+                  <Tooltip title="Delete" placement="top" arrow>
+                    <IconButton
+                      size="small"
+                      onClick={() => handleDelete(image)}
+                      sx={{
+                        color: "rgba(255, 255, 255, 0.54)",
+                        "&:hover": { color: "coral", transform: "scale(1.2)" },
+                      }}
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                  </Tooltip>
+                </>
               }
             />
           </ImageListItem>

@@ -30,12 +30,41 @@ function auth(req, res, next) {
   });
 }
 
+route.delete("/imageDelete?:id", auth, async (req, res) => {
+  const imageID = req.query.id;
+  const image_name = req.query.name;
+  const userId = req.user.id;
+  const selectedGalleryId = req.body.selectedGalleryId;
+
+  let imagePath;
+
+  if (!selectedGalleryId) {
+    imagePath =
+      path.join(__dirname, "..") + `/storage/g${userId}/${image_name}`;
+  } else {
+    imagePath =
+      path.join(__dirname, "..") +
+      `/storage/g${userId}/g${selectedGalleryId}/${image_name}`;
+  }
+
+  Image.destroy({ where: { id: imageID } })
+    .then(async (row) => {
+      const deletedImage = await fs.promises.rm(imagePath);
+      res
+        .status(200)
+        .json({ msg: "Sucessfully deleted image\n " + deletedImage });
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json({ msg: "Failed to delete image" });
+    });
+});
+
 route.post("/imageUpload?:selectedGalleryId", auth, async (req, res) => {
   let id = parseInt(req.query.selectedGalleryId);
   const userId = req.user.id;
   const files = req.files;
   const image = files.file;
-  console.log(image);
 
   //todo: TO FIX CRASHES PARSE THE PATH SO THAT U COVER ALL CASES
   // or check if the image already exists and make a copy
@@ -51,10 +80,12 @@ route.post("/imageUpload?:selectedGalleryId", auth, async (req, res) => {
       storagePath = `storage/g${userId}/g${id}/${imageName}`;
       filePath = path.join(__dirname, "..") + "/" + storagePath;
     }
-    await fs.promises.appendFile(filePath, image.data);
+
+    const file = await fs.promises.appendFile(filePath, image.data);
+    console.log(file);
     const buffer = await fs.promises.readFile(filePath);
     const base64Image = Buffer.from(buffer).toString("base64");
-    const exifData = await exifr.parse(filePath, {
+    const exifDataPicked = await exifr.parse(filePath, {
       pick: [
         "Make",
         "Model",
@@ -68,31 +99,65 @@ route.post("/imageUpload?:selectedGalleryId", auth, async (req, res) => {
         "ApertureValue",
       ],
     });
-    const ev = calculateEV(exifData.FNumber, exifData.ExposureTime);
+
+    const exifData = exifDataPicked
+      ? Object.fromEntries(
+          Object.entries(exifDataPicked).map(([key, value]) => [
+            key,
+            value ?? "unknown",
+          ])
+        )
+      : undefined;
+
+    let newImage;
     const dimensions = sizeOf(image.data);
-    const date = exifData.DateTimeOriginal.toISOString().split("T")[0];
-    const newImage = {
-      image_name: imageName,
-      image_width: dimensions.width,
-      image_height: dimensions.height,
-      image_path: storagePath,
-      make: exifData.Make,
-      model: exifData.Model,
-      iso: exifData.ISO,
-      exposure_time: exifData.ExposureTime,
-      ev: ev,
-      flash: exifData.Flash,
-      f_number: exifData.FNumber,
-      date_time: date,
-      date_time_offset: exifData.OffsetTimeOriginal,
-      gallery_id: id,
-      user_id: userId,
-    };
+
+    if (exifData) {
+      const ev = calculateEV(exifData.FNumber, exifData.ExposureTime);
+      const date = exifData.DateTimeOriginal.toISOString().split("T")[0];
+      newImage = {
+        image_name: imageName,
+        image_width: dimensions.width,
+        image_height: dimensions.height,
+        image_path: storagePath,
+        make: exifData.Make,
+        model: exifData.Model,
+        iso: exifData.ISO,
+        exposure_time: exifData.ExposureTime,
+        ev: ev,
+        flash: exifData.Flash,
+        f_number: exifData.FNumber,
+        date_time: date,
+        date_time_offset: exifData.OffsetTimeOriginal,
+        gallery_id: id,
+        user_id: userId,
+      };
+    } else {
+      newImage = {
+        image_name: imageName,
+        image_width: dimensions.width,
+        image_height: dimensions.height,
+        image_path: storagePath,
+        make: "unknown",
+        model: "unknown",
+        iso: null,
+        exposure_time: null,
+        ev: null,
+        flash: null,
+        f_number: null,
+        date_time: "unknown",
+        date_time_offset: "unknown",
+        gallery_id: id,
+        user_id: userId,
+      };
+    }
+
     Image.create(newImage)
       .then((row) => {
         res.json({ ...row.dataValues, image_buffer: base64Image });
       })
       .catch((err) => {
+        console.log(err);
         res.status(500).json(err);
       });
   } catch (error) {
@@ -101,8 +166,6 @@ route.post("/imageUpload?:selectedGalleryId", auth, async (req, res) => {
 });
 
 function filterImages(images, filterParams) {
-  console.log(filterParams);
-  console.log(images);
   if (!filterParams.filterActivated) {
     return images;
   } else {
@@ -124,10 +187,17 @@ async function processImages(rows, plimit, currentPage, filterParams) {
   const imagePromises = filteredImages.slice(start, end).map(async (record) => {
     try {
       const buffer = await fs.promises.readFile(`./${record.image_path}`);
+      const thumbnail = await exifr.thumbnail(buffer);
+
       const base64Image = Buffer.from(buffer).toString("base64");
+      let thumbnailBase64;
+      if (thumbnail) thumbnailBase64 = thumbnail.toString("base64");
+      else thumbnailBase64 = base64Image;
+
       return {
         ...record,
         image_buffer: base64Image,
+        image_thumbnail: thumbnailBase64,
       };
     } catch (error) {
       console.error(`Error reading file: ${record.image_path}`, error);
@@ -136,7 +206,6 @@ async function processImages(rows, plimit, currentPage, filterParams) {
   });
 
   const images = await Promise.all(imagePromises);
-  console.log(images + "PROMISI");
   return { count: totalPages, images: images.reverse() }; // lifo
   ///return images.filter((img) => img !== null);
 }

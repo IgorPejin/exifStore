@@ -5,7 +5,7 @@ import AutoCompleteAsync from "./AutocompleteAsync/AutocompleteAsync";
 function SidebarActions() {
   return (
     <div className={styles.buttonBox}>
-      <AutoCompleteAsync />
+      <AutoCompleteAsync newGalleryOption="true" />
       {/* todo in future: likes,comments,explore */}
       <div style={{ display: "none" }}>
         <Button

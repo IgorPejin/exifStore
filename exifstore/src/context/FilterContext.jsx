@@ -26,7 +26,6 @@ function FilterProvider({ children }) {
   };
 
   const resetFilters = () => {
-    //todo: clear filters when gallery switched
     setFilter(INITIAL_FILTER);
   };
 
