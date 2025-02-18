@@ -32,20 +32,11 @@ function auth(req, res, next) {
 
 route.delete("/imageDelete?:id", auth, async (req, res) => {
   const imageID = req.query.id;
-  const image_name = req.query.name;
-  const userId = req.user.id;
-  const selectedGalleryId = req.body.selectedGalleryId;
-
   let imagePath;
 
-  if (!selectedGalleryId) {
-    imagePath =
-      path.join(__dirname, "..") + `/storage/g${userId}/${image_name}`;
-  } else {
-    imagePath =
-      path.join(__dirname, "..") +
-      `/storage/g${userId}/g${selectedGalleryId}/${image_name}`;
-  }
+  Image.findAll({ raw: true, nest: true, where: { id: imageID } }).then(
+    (rows) => (imagePath = rows[0].image_path)
+  );
 
   Image.destroy({ where: { id: imageID } })
     .then(async (row) => {
@@ -66,8 +57,6 @@ route.post("/imageUpload?:selectedGalleryId", auth, async (req, res) => {
   const files = req.files;
   const image = files.file;
 
-  //todo: TO FIX CRASHES PARSE THE PATH SO THAT U COVER ALL CASES
-  // or check if the image already exists and make a copy
   const imageName = image.name;
   let filePath;
   let storagePath;
@@ -113,8 +102,12 @@ route.post("/imageUpload?:selectedGalleryId", auth, async (req, res) => {
     const dimensions = sizeOf(image.data);
 
     if (exifData) {
+      console.log("ima exif");
       const ev = calculateEV(exifData.FNumber, exifData.ExposureTime);
-      const date = exifData.DateTimeOriginal.toISOString().split("T")[0];
+      console.log(ev, exifData.FNumber, exifData.ExposureTime);
+      const date = exifData.DateTimeOriginal
+        ? exifData.DateTimeOriginal.toISOString().split("T")[0]
+        : "unknown";
       newImage = {
         image_name: imageName,
         image_width: dimensions.width,
@@ -183,7 +176,9 @@ async function processImages(rows, plimit, currentPage, filterParams) {
   const start = (currentPage - 1) * plimit;
   const end = start + plimit;
   const filteredImages = filterImages(rows, filterParams);
+
   const totalPages = Math.ceil(filteredImages.length / plimit);
+
   const imagePromises = filteredImages.slice(start, end).map(async (record) => {
     try {
       const buffer = await fs.promises.readFile(`./${record.image_path}`);
@@ -206,6 +201,7 @@ async function processImages(rows, plimit, currentPage, filterParams) {
   });
 
   const images = await Promise.all(imagePromises);
+
   return { count: totalPages, images: images.reverse() }; // lifo
   ///return images.filter((img) => img !== null);
 }

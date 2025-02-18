@@ -1,7 +1,8 @@
 .dropzone {
   width: 80%;
   height: 100%;
-  overflow: scroll;
+  overflow-x: none;
+  overflow-y: auto;
   border: 2px dashed whitesmoke;
   border-radius: 10px;
   text-align: center;

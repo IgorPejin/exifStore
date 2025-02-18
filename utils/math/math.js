@@ -3,6 +3,7 @@ function log2(number) {
 }
 
 function calculateEV(fnumber, exposure_time) {
+  if (!fnumber || !exposure_time) return null;
   return 2 * log2(fnumber) - log2(exposure_time);
 }
 

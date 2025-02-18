@@ -22,10 +22,19 @@ const DropzoneComponent = () => {
   const selectedGalleryId = selectedGallery ? selectedGallery.id : 0;
   const { setRefresh } = useContext(FilterContext);
 
-  const generateThumbnail = (file) => {
+  const generateThumbnail = async (file) => {
     const thumbnailElement = file.previewElement.querySelector(".dz-image img");
+    const reader = new FileReader();
+    const exifThumbnail = await exifr.thumbnailUrl(file);
+    console.log(exifThumbnail);
     if (thumbnailElement) {
-      thumbnailElement.src = exifr.thumbnailUrl(file); // Set the image preview if no thumbnail
+      if (exifThumbnail) thumbnailElement.src = exifThumbnail;
+      else {
+        reader.onload = function (e) {
+          thumbnailElement.src = e.target.result; // read image if no exif thumbnail
+        };
+        reader.readAsDataURL(file);
+      }
     }
   };
 

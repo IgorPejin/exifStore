@@ -13,12 +13,15 @@ import utc from "dayjs/plugin/utc";
 import { useContext, useState } from "react";
 import { FilterContext } from "../../../../context/FilterContext";
 import { floatRegex, integerRegex } from "../../../../utils/regex";
+import { GalleryContext } from "../../../../context/GalleryContext";
 
 dayjs.extend(utc);
 
 function ImageFilterBox() {
   const { setRefresh, deleteFilter, resetFilters, updateFilter, filter } =
     useContext(FilterContext);
+
+  const { setCurrentPage } = useContext(GalleryContext);
 
   const [ev, setEv] = useState("");
   const [exposureTime, setExposureTime] = useState("");
@@ -43,6 +46,7 @@ function ImageFilterBox() {
 
   function handleChangeEv(e) {
     const newValue = e.target.value;
+    setCurrentPage(1);
     setEv(newValue);
   }
   function handleBlurEv(e) {
@@ -58,6 +62,7 @@ function ImageFilterBox() {
 
   function handleChangeExposureTime(e) {
     const newValue = e.target.value;
+    setCurrentPage(1);
     setExposureTime(newValue);
   }
 
@@ -74,6 +79,7 @@ function ImageFilterBox() {
 
   function handleChangeIso(e) {
     const newValue = e.target.value;
+    setCurrentPage(1);
     setIso(newValue);
   }
 
@@ -90,6 +96,7 @@ function ImageFilterBox() {
 
   function handleChangeFNumber(e) {
     const newValue = e.target.value;
+    setCurrentPage(1);
     setFNumber(newValue);
   }
 

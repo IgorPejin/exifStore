@@ -4,7 +4,7 @@ import axiosCall from "../utils/axiosCall";
 import { FilterContext } from "./FilterContext";
 
 const GalleryContext = createContext();
-const PAGE_LIMIT = 70; // 50 would be ideal
+const PAGE_LIMIT = 35; // 50 would be ideal
 
 function GalleryProvider({ children }) {
   const [selectedGallery, setSelectedGallery] = useState(null);
@@ -29,6 +29,7 @@ function GalleryProvider({ children }) {
   useEffect(() => {
     async function getImagesForGallery() {
       setLoading(true);
+      setShowPagination(false);
       const id = selectedGallery ? selectedGallery.id : 0;
       const response = await axiosCall(
         "post",
@@ -40,8 +41,11 @@ function GalleryProvider({ children }) {
         }
       );
       console.log(response);
+      console.log(filter);
       const images = response.data.images;
+      console.log(images);
       const totalPages = response.data.count;
+
       setTotalPages(totalPages);
       setImagesForGallery(images);
       setRefresh(false);
@@ -62,8 +66,8 @@ function GalleryProvider({ children }) {
   ]);
 
   const setGalleryContext = (gallery) => {
-    setRefresh(true);
     setCurrentPage(1);
+    setRefresh(true);
     setSelectedGallery(gallery);
   };
 

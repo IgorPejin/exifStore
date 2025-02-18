@@ -21,12 +21,8 @@ export default function MasonryImageList() {
 
   const { setRefresh } = useContext(FilterContext);
 
-  const {
-    imagesForGallery,
-    setSelectedImage,
-    selectedGallery,
-    setShowPagination,
-  } = useContext(GalleryContext);
+  const { imagesForGallery, setSelectedImage, setShowPagination } =
+    useContext(GalleryContext);
   const images = [...imagesForGallery];
 
   const [hoveredIndex, setHoveredIndex] = useState(null);
@@ -50,7 +46,7 @@ export default function MasonryImageList() {
           setShowPagination(false);
         }
       },
-      { threshold: 1 }
+      { threshold: 0.5 }
     );
 
     observer.observe(target);
@@ -85,7 +81,7 @@ export default function MasonryImageList() {
       const response = await axiosCall(
         "delete",
         `http://localhost:7000/exifstore/imageDelete?id=${image.id}&name=${image.image_name}`,
-        { selectedGallery: selectedGallery },
+        undefined,
         {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
@@ -115,7 +111,7 @@ export default function MasonryImageList() {
           transition: shouldFadeIn ? "opacity 0.5s ease-in" : "none",
         }}
         variant="masonry"
-        cols={6}
+        cols={5}
         gap={25}
       >
         {images.map((image, index) => (
@@ -138,7 +134,10 @@ export default function MasonryImageList() {
               title={image.image_name}
               subtitle={"@  " + username}
               sx={{
-                "& .MuiImageListItemBar-title": { fontSize: "0.8rem" },
+                "& .MuiImageListItemBar-title": {
+                  fontSize: "0.8rem",
+                  margin: "0.2rem",
+                },
                 padding: "0",
                 opacity: hoveredIndex === index ? 1 : 0,
                 transition: "opacity 0.3s",
