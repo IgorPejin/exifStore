@@ -16,6 +16,7 @@ function GalleryProvider({ children }) {
   const [imagesForGallery, setImagesForGallery] = useState([]);
   const [selectedImage, setSelectedImage] = useState(false);
 
+  const [showPagination, setShowPagination] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(null);
 
@@ -122,6 +123,8 @@ function GalleryProvider({ children }) {
     setRefresh,
     selectedImage,
     setSelectedImage,
+    showPagination,
+    setShowPagination,
   };
   return (
     <GalleryContext.Provider value={value}>{children}</GalleryContext.Provider>

@@ -1,7 +1,7 @@
 import Box from "@mui/material/Box";
 import ImageList from "@mui/material/ImageList";
 import { GalleryContext } from "../../../../context/GalleryContext";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import {
   IconButton,
   ImageListItem,
@@ -16,17 +16,49 @@ import { FilterContext } from "../../../../context/FilterContext";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 
 export default function MasonryImageList() {
-  const { imagesForGallery, setSelectedImage, selectedGallery } =
-    useContext(GalleryContext);
-  const { setRefresh } = useContext(FilterContext);
   const { username } = useContext(AuthContext);
-  const images = [...imagesForGallery];
-  const [hoveredIndex, setHoveredIndex] = useState(null);
   const { token } = useContext(AuthContext);
+
+  const { setRefresh } = useContext(FilterContext);
+
+  const {
+    imagesForGallery,
+    setSelectedImage,
+    selectedGallery,
+    setShowPagination,
+  } = useContext(GalleryContext);
+  const images = [...imagesForGallery];
+
+  const [hoveredIndex, setHoveredIndex] = useState(null);
 
   const [loadedCount, setLoadedCount] = useState(0);
   const [allLoaded, setAllLoaded] = useState(false);
   const [shouldFadeIn, setShouldFadeIn] = useState(false); // Controls fade-in animation
+
+  const lastImageRef = useRef(null);
+
+  useEffect(() => {
+    const target = lastImageRef.current;
+
+    if (!target) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          setShowPagination(true);
+        } else {
+          setShowPagination(false);
+        }
+      },
+      { threshold: 1 }
+    );
+
+    observer.observe(target);
+
+    return () => {
+      if (target) observer.unobserve(target);
+    };
+  }, [images.length, setShowPagination]);
 
   useEffect(() => {
     if (loadedCount === images.length && images.length > 0) {
@@ -97,6 +129,7 @@ export default function MasonryImageList() {
             <img
               // width="100%"
               // height="100%"
+              ref={index === images.length - 1 ? lastImageRef : null}
               onLoad={() => setLoadedCount((count) => count + 1)}
               onClick={() => handleClick(image)}
               src={`data:image/jpeg;base64,${image.image_thumbnail}`}

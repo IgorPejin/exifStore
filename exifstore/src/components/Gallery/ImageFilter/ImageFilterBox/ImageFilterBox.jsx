@@ -106,7 +106,11 @@ function ImageFilterBox() {
 
   return (
     <div className={styles.imageFilterBox}>
-      <FormControlLabel control={<Checkbox />} label="Flash" />
+      <FormControlLabel
+        sx={{ visibility: "hidden" }}
+        control={<Checkbox />}
+        label="Flash"
+      />
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <DesktopDatePicker
           timezone="UTC"

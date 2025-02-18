@@ -9,8 +9,14 @@ import { GalleryContext } from "../../../context/GalleryContext";
 import { PopUpContext } from "../../../context/PopUpContext";
 
 function ImageList({ show }) {
-  const { currentPage, setCurrentPage, loading, totalPages, setRefresh } =
-    useContext(GalleryContext);
+  const {
+    currentPage,
+    setCurrentPage,
+    loading,
+    totalPages,
+    setRefresh,
+    showPagination,
+  } = useContext(GalleryContext);
   const { setType } = useContext(PopUpContext);
   const handleChange = (event, value) => {
     setRefresh(true);
@@ -28,6 +34,7 @@ function ImageList({ show }) {
       {
         <div className={styles.imageListActionBox}>
           <Pagination
+            hidden={showPagination ? false : true}
             count={totalPages}
             page={currentPage}
             onChange={handleChange}
