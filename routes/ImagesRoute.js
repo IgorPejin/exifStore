@@ -30,6 +30,18 @@ function auth(req, res, next) {
   });
 }
 
+route.get("/imagesByUser", auth, async (req, res) => {
+  const userId = req.user.id;
+
+  const imagesCount = await Image.findAll({
+    raw: true,
+    nest: true,
+    where: { user_id: userId },
+  });
+
+  res.status(200).json(imagesCount.length);
+});
+
 route.delete("/imageDelete?:id", auth, async (req, res) => {
   const imageID = req.query.id;
   let imagePath;
@@ -46,7 +58,6 @@ route.delete("/imageDelete?:id", auth, async (req, res) => {
         .json({ msg: "Sucessfully deleted image\n " + deletedImage });
     })
     .catch((err) => {
-      console.log(err);
       res.status(500).json({ msg: "Failed to delete image" });
     });
 });
@@ -71,7 +82,6 @@ route.post("/imageUpload?:selectedGalleryId", auth, async (req, res) => {
     }
 
     const file = await fs.promises.appendFile(filePath, image.data);
-    console.log(file);
     const buffer = await fs.promises.readFile(filePath);
     const base64Image = Buffer.from(buffer).toString("base64");
     const exifDataPicked = await exifr.parse(filePath, {

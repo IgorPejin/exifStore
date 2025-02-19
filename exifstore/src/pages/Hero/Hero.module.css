@@ -55,11 +55,13 @@
 }
 
 .heroImage {
-  width: 300px;
+  width: 40%;
+  height: auto;
   margin-top: 20px;
+  padding: 2.5rem;
   border-radius: 15px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-  animation: float 3s infinite ease-in-out;
+  animation: fadeIn 1.2s ease-in-out, float 2s infinite ease-in-out;
 }
 
 .heroButton {
@@ -106,7 +108,7 @@
     transform: translateY(0);
   }
   50% {
-    transform: translateY(-10px);
+    transform: translateY(-15px);
   }
   100% {
     transform: translateY(0);

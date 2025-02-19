@@ -20,6 +20,9 @@ function FilterProvider({ children }) {
     const updatedFilter = { ...filter };
     if (updatedFilter[property]) {
       delete updatedFilter[property];
+      if (Object.values(updatedFilter).length === 1) {
+        updatedFilter.filterActivated = false;
+      }
       setFilter(updatedFilter);
       setRefresh(true);
     }

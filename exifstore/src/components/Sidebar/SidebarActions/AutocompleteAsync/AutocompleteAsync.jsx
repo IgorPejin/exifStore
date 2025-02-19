@@ -65,7 +65,7 @@ export default function AutocompleteAsync({ newGalleryOption }) {
   };
 
   const handleChange = (e, newValue) => {
-    setGalleryContext(newValue);
+    setGalleryContext(newValue, newGalleryOption);
   };
 
   return (
@@ -130,7 +130,11 @@ export default function AutocompleteAsync({ newGalleryOption }) {
         }}
       >
         {newGalleryOption === "true" && (
-          <IconButton onClick={() => setType("add_gallery")} aria-label="add">
+          <IconButton
+            sx={{ borderRadius: "5px", padding: "0.7rem" }}
+            onClick={() => setType("add_gallery")}
+            aria-label="add"
+          >
             <span className={styles.addAction}>Add new gallery </span>
             <AddCircleIcon sx={{ color: "#55B" }} />
           </IconButton>

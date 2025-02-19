@@ -29,12 +29,14 @@ function ImageFilterBox() {
   const [fnumber, setFNumber] = useState("");
 
   function handleResetFilters() {
-    setEv("");
-    setExposureTime("");
-    setIso("");
-    setFNumber("");
-    resetFilters();
-    setRefresh(true);
+    if (filter.filterActivated) {
+      setEv("");
+      setExposureTime("");
+      setIso("");
+      setFNumber("");
+      resetFilters();
+      setRefresh(true);
+    }
   }
 
   //todo: abstract handlers

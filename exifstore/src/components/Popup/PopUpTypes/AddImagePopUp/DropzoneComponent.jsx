@@ -17,10 +17,13 @@ const DropzoneComponent = () => {
   const dropzoneInstance = useRef(null);
   const { token } = useContext(AuthContext);
   const { setType } = useContext(PopUpContext);
-  const { selectedGallery } = useContext(GalleryContext);
+  const { selectedGallery, setImageCounter, imageCounter } =
+    useContext(GalleryContext);
   const [isUploadEnabled, setIsUploadEnabled] = useState(false);
   const selectedGalleryId = selectedGallery ? selectedGallery.id : 0;
   const { setRefresh } = useContext(FilterContext);
+  const fileCount = useRef(imageCounter);
+  const [isDropzoneUsed, setIsDropzoneUsed] = useState(false);
 
   const generateThumbnail = async (file) => {
     const thumbnailElement = file.previewElement.querySelector(".dz-image img");
@@ -75,11 +78,15 @@ const DropzoneComponent = () => {
 
       dropzoneInstance.current.on("success", (file) => {
         console.log("File uploaded successfully: ", file.name);
+        fileCount.current = fileCount.current + 1;
       });
 
       dropzoneInstance.current.on("queuecomplete", () => {
+        setImageCounter(fileCount.current);
+        setIsDropzoneUsed(true);
         setTimeout(() => {
           console.log("All files finished uploading! (Delayed by 2 seconds)");
+          fileCount.current = 0;
           dropzoneInstance.current.removeAllFiles(true); // Cancel uploads and clear files
         }, 3000); // 2000ms = 2 seconds
       });
@@ -95,7 +102,14 @@ const DropzoneComponent = () => {
         }
       });
     }
-  }, [token, dropzoneInstance, selectedGalleryId, setRefresh]);
+  }, [
+    token,
+    fileCount,
+    dropzoneInstance,
+    selectedGalleryId,
+    setRefresh,
+    setImageCounter,
+  ]);
 
   function triggerUploadSequence(confirmStatus) {
     if (!dropzoneInstance.current) return;
@@ -108,7 +122,7 @@ const DropzoneComponent = () => {
         dropzoneInstance.current.processQueue();
         setTimeout(() => {
           processBatch(); // Recursively call processBatch to handle the next batch
-        }, 3000); // Adjust delay as needed (e.g., 3 seconds)
+        }, 3000);
       }
     }
 
@@ -139,7 +153,10 @@ const DropzoneComponent = () => {
       dropzoneInstance.current = null; // Reset reference
     }
     setType(null);
-    setRefresh(true);
+    if (isDropzoneUsed) {
+      setRefresh(true);
+      setIsDropzoneUsed(false);
+    }
   }
 
   return (

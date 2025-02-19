@@ -20,6 +20,9 @@ function GalleryProvider({ children }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(null);
 
+  const [imageCounter, setImageCounter] = useState(0);
+  const [imageCounterLoader, setImageCounterLoader] = useState(true);
+
   const { token } = useContext(AuthContext);
 
   //todo: remove setRefresh entirely
@@ -40,10 +43,8 @@ function GalleryProvider({ children }) {
           Authorization: `Bearer ${token}`,
         }
       );
-      console.log(response);
-      console.log(filter);
       const images = response.data.images;
-      console.log(images);
+
       const totalPages = response.data.count;
 
       setTotalPages(totalPages);
@@ -129,6 +130,10 @@ function GalleryProvider({ children }) {
     setSelectedImage,
     showPagination,
     setShowPagination,
+    imageCounter,
+    setImageCounter,
+    imageCounterLoader,
+    setImageCounterLoader,
   };
   return (
     <GalleryContext.Provider value={value}>{children}</GalleryContext.Provider>
