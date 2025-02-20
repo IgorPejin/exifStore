@@ -7,7 +7,7 @@ function UserData() {
 
   return (
     <div className={styles.userBox}>
-      <img className={styles.userImage} src="" alt=""></img>
+      <img className={styles.userImage} src="/igor2.png" alt=""></img>
       <div className={styles.userData}>
         <p style={{ fontWeight: "bold" }}>@{username}</p>
         <p className={styles.userDataEmail}>{email}</p>
