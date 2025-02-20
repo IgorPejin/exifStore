@@ -149,6 +149,7 @@ export default function MasonryImageList() {
                       onClick={() => handleAddToGallery(image)}
                       size="small"
                       sx={{
+                        visibility: "hidden",
                         color: "rgba(255, 255, 255, 0.54)",
                         "&:hover": { color: "#55b", transform: "scale(1.2)" },
                       }}

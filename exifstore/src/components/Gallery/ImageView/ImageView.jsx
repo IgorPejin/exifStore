@@ -46,27 +46,34 @@ function ImageView({ show }) {
             />
 
             <div className={styles.imageInfoBox}>
-              <h1>{selectedImage.image_name}</h1>
+              <h2 className={styles.imageInfoTitle}>
+                {selectedImage.image_name}
+              </h2>
               <p>
-                Width: {selectedImage.image_width}
+                Width: {selectedImage.image_width} &nbsp;&nbsp;
                 <br />
-                Height: {selectedImage.image_height}
-                <br /> <br />
+                <br />
+                Height: {selectedImage.image_height}&nbsp;&nbsp;
+              </p>
+              <p>
                 Manufacturer: {selectedImage.make}
                 <br />
+                <br />
                 Model: {selectedImage.model}
-                <br /> <br />
-                EV: {selectedImage.ev}
+              </p>
+              <p>
+                EV: {selectedImage.ev} &nbsp;&nbsp;
                 <br />
-                ISO: {selectedImage.iso}
+                ISO: {selectedImage.iso}&nbsp;&nbsp;
                 <br />
-                Exposure time: {selectedImage.exposure_time}
-                <br />F number: {selectedImage.f_number}
-                <br /> <br />
+                Exposure time: {selectedImage.exposure_time} &nbsp;&nbsp;
+                <br />F number: {selectedImage.f_number}&nbsp;&nbsp;
+              </p>
+              <p>
                 Date: {selectedImage.date_time}
                 <br />
-                Flash: {selectedImage.flash}
                 <br />
+                Flash: {selectedImage.flash}
               </p>
             </div>
           </>
