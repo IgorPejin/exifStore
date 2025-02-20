@@ -26,7 +26,7 @@ function Hero() {
           Get Started
         </button>
       </div>
-      <img src="" alt="Hero" className={styles.heroImage} />
+      <img src="/app.png" alt="Hero" className={styles.heroImage} />
     </div>
   );
 }
