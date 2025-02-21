@@ -55,6 +55,7 @@ function EditGalleryPopUp({ boxStyle }) {
           <UndoIcon />
         </IconButton>
         <div className={styles.editWrapper}>
+          <h2>Change gallery name</h2>
           <form className={styles.editForm} onSubmit={handleSubmit}>
             <TextField
               value={newGalleryName}
@@ -94,7 +95,7 @@ function EditGalleryPopUp({ boxStyle }) {
               Edit
             </Button>
           </form>
-          <img className={styles.editThumbnail} src="#" />
+          {/* <img className={styles.editThumbnail} src="#" /> */}
         </div>
       </div>
     </div>

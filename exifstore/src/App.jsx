@@ -7,6 +7,7 @@ import { AuthProvider } from "./context/AuthContext";
 import { GalleryProvider } from "./context/GalleryContext";
 import { FilterProvider } from "./context/FilterContext";
 import { PopUpProvider } from "./context/PopUpContext";
+import { HistoryProvider } from "./context/HistoryContext";
 
 function App() {
   return (
@@ -14,15 +15,17 @@ function App() {
       <AuthProvider>
         <FilterProvider>
           <GalleryProvider>
-            <PopUpProvider>
-              <Routes>
-                <Route index element={<Hero />} />
-                <Route element={<ProtectedRoute />}>
-                  <Route path="/:username" element={<ExifStoreApp />} />
-                </Route>
-                <Route path="/login" element={<Login />} />
-              </Routes>
-            </PopUpProvider>
+            <HistoryProvider>
+              <PopUpProvider>
+                <Routes>
+                  <Route index element={<Hero />} />
+                  <Route element={<ProtectedRoute />}>
+                    <Route path="/:username" element={<ExifStoreApp />} />
+                  </Route>
+                  <Route path="/login" element={<Login />} />
+                </Routes>
+              </PopUpProvider>
+            </HistoryProvider>
           </GalleryProvider>
         </FilterProvider>
       </AuthProvider>

@@ -1,10 +1,11 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { AuthContext } from "./AuthContext";
 import axiosCall from "../utils/axiosCall";
 import { FilterContext } from "./FilterContext";
+import { INITAL_HISTORY } from "../utils/properties";
 
 const GalleryContext = createContext();
-const PAGE_LIMIT = 35; // 50 would be ideal
+const PAGE_LIMIT = 35;
 
 function GalleryProvider({ children }) {
   const [selectedGallery, setSelectedGallery] = useState(null);
@@ -12,7 +13,6 @@ function GalleryProvider({ children }) {
 
   const [loading, setLoading] = useState(false);
 
-  //todo: learn the basics of useMemo so that u can save a request if the selected gallery is the same, or implement history context
   const [imagesForGallery, setImagesForGallery] = useState([]);
   const [selectedImage, setSelectedImage] = useState(false);
 
@@ -23,10 +23,9 @@ function GalleryProvider({ children }) {
   const [imageCounter, setImageCounter] = useState(0);
   const [imageCounterLoader, setImageCounterLoader] = useState(true);
 
+  const history = useRef(INITAL_HISTORY);
+
   const { token } = useContext(AuthContext);
-
-  //todo: remove setRefresh entirely
-
   const { filter, refresh, setRefresh } = useContext(FilterContext);
 
   useEffect(() => {
@@ -44,7 +43,6 @@ function GalleryProvider({ children }) {
         }
       );
       const images = response.data.images;
-
       const totalPages = response.data.count;
 
       setTotalPages(totalPages);
@@ -55,6 +53,8 @@ function GalleryProvider({ children }) {
     if (imagesForGallery.length == 0 || refresh) {
       console.log("refreshing images");
       getImagesForGallery();
+    } else {
+      console.log("update history");
     }
   }, [
     selectedGallery,
@@ -134,6 +134,7 @@ function GalleryProvider({ children }) {
     setImageCounter,
     imageCounterLoader,
     setImageCounterLoader,
+    history,
   };
   return (
     <GalleryContext.Provider value={value}>{children}</GalleryContext.Provider>

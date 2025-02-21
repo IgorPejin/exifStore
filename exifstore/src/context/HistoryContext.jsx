@@ -1,33 +1,37 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect } from "react";
 import { GalleryContext } from "./GalleryContext";
+import { INITAL_HISTORY } from "../utils/properties";
 
 const HistoryContext = createContext();
 
 function HistoryProvider({ children }) {
-  const { totalPages } = useContext(GalleryContext);
-  const [history, setHistory] = useState({});
+  const { optionsContext, totalPages, history } = useContext(GalleryContext);
 
   useEffect(() => {
-    async function initializeHistory() {
-      const createHistory = (n) =>
-        Object.fromEntries(Array.from({ length: n }, (_, i) => [i, []]));
-      rewriteHistory(createHistory(totalPages));
+    async function initializeHistory(optionsContext) {
+      const defaultHistory = INITAL_HISTORY;
+      const createDefaultHistoryPages = (totalPages) =>
+        Object.fromEntries(
+          Array.from({ length: totalPages }, (_, i) => [i, []])
+        );
+
+      defaultHistory.default = createDefaultHistoryPages(totalPages);
+
+      const createHistoryForOptions = (optionsContext) =>
+        Object.fromEntries(
+          Array.from(optionsContext, (option) => [option.name, {}])
+        );
+
+      const newHistory = {
+        ...defaultHistory,
+        ...createHistoryForOptions(optionsContext),
+      };
+      history.current = newHistory;
     }
-    initializeHistory(totalPages);
-  }, [totalPages]);
+    initializeHistory(optionsContext);
+  }, [optionsContext, totalPages, history]);
 
-  const rewriteHistory = (newHistory) => {
-    console.log("Time to create (new) history!");
-    setHistory(newHistory);
-  };
-
-  const value = {
-    history,
-    rewriteHistory,
-  };
-  return (
-    <HistoryContext.Provider value={value}>{children}</HistoryContext.Provider>
-  );
+  return <HistoryContext.Provider>{children}</HistoryContext.Provider>;
 }
 
 export { HistoryContext, HistoryProvider };
