@@ -17,12 +17,11 @@ const DropzoneComponent = () => {
   const dropzoneInstance = useRef(null);
   const { token } = useContext(AuthContext);
   const { setType } = useContext(PopUpContext);
-  const { selectedGallery, setImageCounter, imageCounter } =
-    useContext(GalleryContext);
+  const { selectedGallery, setImageCounter } = useContext(GalleryContext);
   const [isUploadEnabled, setIsUploadEnabled] = useState(false);
   const selectedGalleryId = selectedGallery ? selectedGallery.id : 0;
   const { setRefresh } = useContext(FilterContext);
-  const fileCount = useRef(imageCounter);
+  const fileCount = useRef(0);
   const [isDropzoneUsed, setIsDropzoneUsed] = useState(false);
 
   const generateThumbnail = async (file) => {
@@ -82,7 +81,7 @@ const DropzoneComponent = () => {
       });
 
       dropzoneInstance.current.on("queuecomplete", () => {
-        setImageCounter(fileCount.current);
+        setImageCounter((previous) => previous + fileCount.current);
         setIsDropzoneUsed(true);
         setTimeout(() => {
           console.log("All files finished uploading! (Delayed by 2 seconds)");
@@ -157,6 +156,7 @@ const DropzoneComponent = () => {
       setRefresh(true);
       setIsDropzoneUsed(false);
     }
+    fileCount.current = 0;
   }
 
   return (

@@ -4,6 +4,8 @@ const { sequelize, User } = require("./models");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const Joi = require("joi");
+const path = require("path");
+const fs = require("fs");
 
 const cors = require("cors");
 require("dotenv").config();
@@ -43,7 +45,7 @@ appAuth.post("/register", (req, res) => {
     res.status(400).json({ msg: "" + error.message });
   } else {
     User.create(joi)
-      .then((rows) => {
+      .then(async (rows) => {
         const usr = {
           id: rows.id,
           username: rows.username,
@@ -52,10 +54,12 @@ appAuth.post("/register", (req, res) => {
         };
 
         const token = jwt.sign(usr, process.env.ACCESS_TOKEN_SECRET);
-
+        // const galleryPath = path.join(__dirname, "..", "storage", `g${usr.id}`); // idk why this doesn't work
+        await fs.promises.mkdir(`storage/g${usr.id}`, { recursive: true });
         res.json({ token: token });
       })
       .catch((err) => {
+        console.log(err);
         res.status(500).json(err);
       });
   }

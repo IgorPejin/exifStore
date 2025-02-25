@@ -33,6 +33,7 @@ function Login() {
       username: username,
       password: password,
     };
+
     if (register) {
       const response = await axiosCall(
         "post",
@@ -44,7 +45,7 @@ function Login() {
       if (response.error) {
         alert("There seems to be an error which says:\n " + response.error);
       } else
-        login(response.data.token, response.data.email, credentials.username);
+        login(response.data.token, credentials.email, credentials.username);
     } else {
       const response = await axiosCall(
         "post",

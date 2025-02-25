@@ -112,7 +112,7 @@ export default function MasonryImageList() {
         }}
         variant="masonry"
         cols={5}
-        gap={25}
+        gap={20}
       >
         {images.map((image, index) => (
           <ImageListItem

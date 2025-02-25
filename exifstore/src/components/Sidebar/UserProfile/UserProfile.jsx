@@ -43,18 +43,12 @@ function UserProfile() {
           className={styles.userProfileDataRow}
         >
           <p>Total galleries: </p>
-          <p>
-            {optionsContext.length === 0 ? (
-              <CircularProgress size={"10px"} />
-            ) : (
-              optionsContext.length
-            )}
-          </p>
+          <p>{optionsContext.length}</p>
         </div>
         <div className={styles.userProfileDataRow}>
           <p>Total images:</p>
           <p>
-            {imageCounterLoader || optionsContext.length === 0 ? (
+            {imageCounterLoader ? (
               <CircularProgress size={"10px"} />
             ) : (
               imageCounter

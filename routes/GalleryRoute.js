@@ -74,10 +74,11 @@ route.post("/addNewGallery", auth, (req, res) => {
       const galleryPath =
         path.join(__dirname, "..") +
         `/storage/g${userId}/g${row.dataValues.id}`;
-      await fs.promises.mkdir(galleryPath);
+      await fs.promises.mkdir(galleryPath, { recursive: true });
       res.json(row);
     })
     .catch((err) => {
+      console.log(err);
       res.status(500).json(err);
     });
 });

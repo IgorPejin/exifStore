@@ -13,6 +13,7 @@ function AuthProvider({ children }) {
 
   const login = (token, email, username) => {
     setToken(token);
+    console.log(email);
     setEmail(email);
     setUsername(username);
     setIsAuthenticated((isAuthenticated) => !isAuthenticated);

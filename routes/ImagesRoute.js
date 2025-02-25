@@ -81,7 +81,9 @@ route.post("/imageUpload?:selectedGalleryId", auth, async (req, res) => {
       filePath = path.join(__dirname, "..") + "/" + storagePath;
     }
 
-    const file = await fs.promises.appendFile(filePath, image.data);
+    const file = await fs.promises.appendFile(filePath, image.data, {
+      recursive: true,
+    });
     const buffer = await fs.promises.readFile(filePath);
     const base64Image = Buffer.from(buffer).toString("base64");
     const exifDataPicked = await exifr.parse(filePath, {
@@ -223,7 +225,11 @@ route.post("/imagesForGallery?:query", auth, async (req, res) => {
   const filterParams = req.body;
 
   if (id != 0) {
-    Image.findAll({ raw: true, nest: true, where: { gallery_id: id } })
+    Image.findAll({
+      raw: true,
+      nest: true,
+      where: { gallery_id: id, user_id: req.user.id },
+    })
       .then((rows) =>
         processImages(
           rows,
@@ -235,7 +241,7 @@ route.post("/imagesForGallery?:query", auth, async (req, res) => {
       .then((data) => res.json(data))
       .catch((err) => res.status(500).json(err));
   } else {
-    Image.findAll({ raw: true, nest: true })
+    Image.findAll({ raw: true, nest: true, where: { user_id: req.user.id } })
       .then((rows) =>
         processImages(
           rows,
