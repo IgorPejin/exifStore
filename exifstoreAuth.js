@@ -4,7 +4,6 @@ const { sequelize, User } = require("./models");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const Joi = require("joi");
-const path = require("path");
 const fs = require("fs");
 
 const cors = require("cors");
@@ -70,7 +69,7 @@ appAuth.post("/register", (req, res) => {
 appAuth.post("/login", (req, res) => {
   User.findOne({ where: { username: req.body.username } })
     .then((usr) => {
-      if (bcrypt.compareSync(req.body.password, usr.password)) {
+      if (bcrypt.compare(req.body.password, usr.password)) {
         const obj = {
           id: usr.id,
           username: usr.username,

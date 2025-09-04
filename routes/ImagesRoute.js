@@ -1,11 +1,10 @@
 const express = require("express");
 const jwt = require("jsonwebtoken");
-const Joi = require("joi");
 const fs = require("fs");
 const path = require("path");
 const fileupload = require("express-fileupload");
 const exifr = require("exifr");
-const sizeOf = require("image-size");
+const { imageSize } = require("image-size");
 require("dotenv").config();
 
 const { Image } = require("../models");
@@ -111,7 +110,7 @@ route.post("/imageUpload?:selectedGalleryId", auth, async (req, res) => {
       : undefined;
 
     let newImage;
-    const dimensions = sizeOf(image.data);
+    const dimensions = imageSize(image.data);
 
     if (exifData) {
       console.log("ima exif");
@@ -196,10 +195,12 @@ async function processImages(rows, plimit, currentPage, filterParams) {
       const buffer = await fs.promises.readFile(`./${record.image_path}`);
       const thumbnail = await exifr.thumbnail(buffer);
 
-      const base64Image = Buffer.from(buffer).toString("base64");
+      const base64Image = buffer.toString("base64");
       let thumbnailBase64;
       if (thumbnail) thumbnailBase64 = thumbnail.toString("base64");
-      else thumbnailBase64 = base64Image;
+      else {
+        thumbnailBase64 = base64Image;
+      }
 
       return {
         ...record,
